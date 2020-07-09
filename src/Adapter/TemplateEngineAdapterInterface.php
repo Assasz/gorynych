@@ -11,6 +11,8 @@ namespace Gorynych\Adapter;
 interface TemplateEngineAdapterInterface
 {
     /**
+     * Renders given template
+     *
      * @param string $template
      * @param array $parameters
      * @return string

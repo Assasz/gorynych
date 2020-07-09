@@ -13,14 +13,18 @@ use Gorynych\Resource\Exception\InvalidEntityException;
 interface ValidatorAdapterInterface
 {
     /**
-     * @param string $constraint
+     * Setups validator
+     *
+     * @param string $constraint Constraint name to validate against
      * @return mixed
      */
     public function setup(string $constraint);
 
     /**
+     * Validates provided entity object
+     *
      * @param object $entity
-     * @throws InvalidEntityException
+     * @throws InvalidEntityException if entity is not valid
      */
     public function validate(object $entity): void;
 }

@@ -11,12 +11,16 @@ namespace Gorynych\Adapter;
 interface SerializerAdapterInterface
 {
     /**
-     * @param string|null $definition
+     * Setups serializer
+     *
+     * @param string|null $definition Serializer definition name
      * @return mixed
      */
     public function setup(string $definition = null);
 
     /**
+     * Normalizes provided data
+     *
      * @param object|object[] $data
      * @param array $context
      * @return array
@@ -24,6 +28,8 @@ interface SerializerAdapterInterface
     public function normalize($data, array $context = []): array;
 
     /**
+     * Deserializes input data into specified object
+     *
      * @param string $data
      * @param string $outputClass
      * @param string $format
