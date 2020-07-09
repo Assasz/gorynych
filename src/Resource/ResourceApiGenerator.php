@@ -10,7 +10,7 @@ namespace Gorynych\Resource;
 
 use Cake\Collection\Collection;
 use Gorynych\Adapter\TemplateEngineAdapterInterface;
-use Gorynych\Resource\Generator\TemplateParams;
+use Gorynych\Resource\ApiGenerator\TemplateParams;
 use Symfony\Component\Yaml\Yaml;
 
 final class ResourceApiGenerator
@@ -128,6 +128,6 @@ final class ResourceApiGenerator
      */
     private function parseTemplateSchema(): array
     {
-        return Yaml::parse(__DIR__ . '/Generator/template_schema.yaml');
+        return Yaml::parse(__DIR__ . '/ApiGenerator/template_schema.yaml');
     }
 }
