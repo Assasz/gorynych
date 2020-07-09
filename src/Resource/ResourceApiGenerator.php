@@ -8,27 +8,22 @@ declare(strict_types=1);
 
 namespace Gorynych\Resource;
 
+use Cake\Collection\Collection;
 use Gorynych\Adapter\TemplateEngineAdapterInterface;
 use Gorynych\Resource\Generator\TemplateParams;
+use Symfony\Component\Yaml\Yaml;
 
 final class ResourceApiGenerator
 {
-    // TODO: read from config file
-    private const ITEM_RESOURCE_OPERATIONS = [
-        'operations/item/get.php.twig' => '/src/Ports/Operation/%s/GetOperation',
-        'operations/item/remove.php.twig' => '/src/Ports/Operation/%s/RemoveOperation',
-        'operations/item/replace.php.twig' => '/src/Ports/Operation/%s/ReplaceOperation',
-    ];
-
-    private const COLLECTION_RESOURCE_OPERATIONS = [
-        'operations/collection/get.php.twig' => '/src/Ports/Operation/%sCollection/GetOperation',
-        'operations/collection/insert.php.twig' => '/src/Ports/Operation/%sCollection/InsertOperation',
-    ];
-
     private TemplateEngineAdapterInterface $templateEngine;
     private ResourceConfigBuilder $resourcesConfigBuilder;
+
+    /** @var string[][][][] */
+    private array $templateSchema;
+
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
+    private ?TemplateParams $templateParams;
 
     /**
      * @param TemplateEngineAdapterInterface $templateEngine
@@ -38,6 +33,7 @@ final class ResourceApiGenerator
     {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
+        $this->templateSchema = $this->parseTemplateSchema();
     }
 
     /**
@@ -46,9 +42,13 @@ final class ResourceApiGenerator
     public function generate(\ReflectionClass $resourceReflection): void
     {
         $this->resourceReflection = $resourceReflection;
+        $this->templateParams = TemplateParams::fromReflection($this->resourceReflection);
 
-        foreach ($this->resolveOperationSet() as $templateName => $outputPath) {
-            $this->generateOperation($templateName, $outputPath);
+        foreach ($this->resolveTemplateSchema() as $configuration) {
+            $this->generateOperation(
+                $configuration['operation']['template'],
+                $configuration['operation']['output'],
+            );
         }
 
         $this->updateConfiguration();
@@ -60,10 +60,8 @@ final class ResourceApiGenerator
      */
     private function generateOperation(string $templateName, string $outputPath): void
     {
-        $templateParams = TemplateParams::fromReflection($this->resourceReflection);
-        $operationPath = dirname(__DIR__, 4) . sprintf($outputPath, $templateParams->entityClassName);
-
-        $operationContent = $this->templateEngine->render($templateName, (array)$templateParams);
+        $operationPath = dirname(__DIR__, 4) . sprintf($outputPath, $this->templateParams->entityClassName);
+        $operationContent = $this->templateEngine->render($templateName, (array)$this->templateParams);
 
         $this->write($operationPath, $operationContent);
     }
@@ -73,14 +71,16 @@ final class ResourceApiGenerator
      */
     private function updateConfiguration(): void
     {
-        $templateParams = TemplateParams::fromReflection($this->resourceReflection);
+        $templateParams = $this->templateParams;
 
-        $newConfigRecords = array_map(
-            static function (string $operationPath) use ($templateParams): string {
-                return $templateParams->rootNamespace . str_replace('/', '\\', sprintf($operationPath, $templateParams->entityClassName));
-            },
-            array_values($this->resolveOperationSet())
-        );
+        $newConfigRecords = (new Collection($this->resolveTemplateSchema()))
+            ->unfold()
+            ->map(static function (array $schema) use ($templateParams): string {
+                return $templateParams->rootNamespace .
+                    str_replace('/', '\\',
+                        sprintf($schema['operation']['output'], $templateParams->entityClassName));
+            })
+            ->toList();
 
         $this->resourcesConfigBuilder
             ->selectResource($this->resourceReflection->getName())
@@ -89,20 +89,20 @@ final class ResourceApiGenerator
     }
 
     /**
-     * @return string[]
-     * @throws \InvalidArgumentException
+     * @return string[][][]
+     * @throws \LogicException
      */
-    private function resolveOperationSet(): array
+    private function resolveTemplateSchema(): array
     {
         if ($this->resourceReflection->implementsInterface(CollectionResourceInterface::class)) {
-            return self::COLLECTION_RESOURCE_OPERATIONS;
+            return $this->templateSchema['collectionResource'];
         }
 
         if ($this->resourceReflection->implementsInterface(ResourceInterface::class)) {
-            return self::ITEM_RESOURCE_OPERATIONS;
+            return $this->templateSchema['itemResource'];
         }
 
-        throw new \InvalidArgumentException('Unknown resource type.');
+        throw new \LogicException('Unknown resource type.');
     }
 
     /**
@@ -121,5 +121,13 @@ final class ResourceApiGenerator
         if (false === file_exists($path)) {
             file_put_contents($path, $content);
         }
+    }
+
+    /**
+     * @return string[][][][]
+     */
+    private function parseTemplateSchema(): array
+    {
+        return Yaml::parse(__DIR__ . '/Generator/template_schema.yaml');
     }
 }
