@@ -10,7 +10,7 @@ namespace Gorynych\Resource;
 
 use Cake\Collection\Collection;
 use Gorynych\Adapter\TemplateEngineAdapterInterface;
-use Gorynych\Resource\ApiGenerator\TemplateParams;
+use Gorynych\Resource\ApiGenerator\TemplateParameters;
 use Symfony\Component\Yaml\Yaml;
 
 final class ResourceApiGenerator
@@ -23,7 +23,7 @@ final class ResourceApiGenerator
 
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
-    private ?TemplateParams $templateParams;
+    private ?TemplateParameters $templateParams;
 
     /**
      * @param TemplateEngineAdapterInterface $templateEngine
@@ -42,7 +42,7 @@ final class ResourceApiGenerator
     public function generate(\ReflectionClass $resourceReflection): void
     {
         $this->resourceReflection = $resourceReflection;
-        $this->templateParams = TemplateParams::fromReflection($this->resourceReflection);
+        $this->templateParams = TemplateParameters::fromReflection($this->resourceReflection);
 
         foreach ($this->resolveTemplateSchema() as $configuration) {
             $this->generateOperation(

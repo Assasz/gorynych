@@ -10,7 +10,7 @@ namespace Gorynych\Resource\ApiGenerator;
 
 use Gorynych\Resource\AbstractResource;
 
-final class TemplateParams
+final class TemplateParameters
 {
     public string $rootNamespace;
     public string $resourceNamespace;
@@ -24,15 +24,16 @@ final class TemplateParams
      */
     public static function fromReflection(\ReflectionClass $resourceReflection): self
     {
-        $rootNamespace = current(explode('\\', $resourceReflection->getNamespaceName()));
-        $entityClassName = preg_replace('(Resource|CollectionResource)', '', $resourceReflection->getShortName());
+        $resourceNamespaceParts = explode('\\', $resourceReflection->getNamespaceName());
+        $rootNamespace = current($resourceNamespaceParts);
+        $entityClassName = end($resourceNamespaceParts);
 
         $self = new self();
         $self->rootNamespace = $rootNamespace;
         $self->resourceNamespace = $resourceReflection->getName();
         $self->resourceClassName = $resourceReflection->getShortName();
         $self->entityNamespace = "{$rootNamespace}\Domain\Entity\\{$entityClassName}";
-        $self->entityClassName = (string)$entityClassName;
+        $self->entityClassName = $entityClassName;
 
         return $self;
     }
