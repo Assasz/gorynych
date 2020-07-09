@@ -22,8 +22,8 @@ interface SerializerAdapterInterface
      * Normalizes provided data
      *
      * @param object|object[] $data
-     * @param array $context
-     * @return array
+     * @param mixed[] $context
+     * @return mixed[]
      */
     public function normalize($data, array $context = []): array;
 
@@ -33,7 +33,7 @@ interface SerializerAdapterInterface
      * @param string $data
      * @param string $outputClass
      * @param string $format
-     * @param array $context
+     * @param mixed[] $context
      * @return object
      */
     public function deserialize(string $data, string $outputClass, string $format, array $context = []): object;

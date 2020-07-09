@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class Kernel
 {
-    private ?ContainerInterface $container;
+    private ?ContainerBuilder $container;
     private string $env;
     private bool $booted = false;
 

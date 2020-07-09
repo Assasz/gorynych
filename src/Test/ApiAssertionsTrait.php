@@ -13,6 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait ApiAssertionsTrait
 {
+    /**
+     * @param Response $response
+     * @param string $schemaClassName
+     * @param int|null $checkMode
+     * @param string $message
+     */
     public static function assertMatchesItemJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
     {
         $data = json_decode($response->getContent(), true);
@@ -20,6 +26,12 @@ trait ApiAssertionsTrait
         self::matchesJsonSchema($data, $schemaClassName, $checkMode, $message);
     }
 
+    /**
+     * @param Response $response
+     * @param string $schemaClassName
+     * @param int|null $checkMode
+     * @param string $message
+     */
     public static function assertMatchesCollectionJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
     {
         $data = json_decode($response->getContent(), true);
@@ -28,6 +40,12 @@ trait ApiAssertionsTrait
         self::matchesJsonSchema($data, $schemaClassName, $checkMode, $message);
     }
 
+    /**
+     * @param object|mixed[] $data
+     * @param string $schemaClassName
+     * @param int|null $checkMode
+     * @param string $message
+     */
     private static function matchesJsonSchema($data, string $schemaClassName, ?int $checkMode, string $message = ''): void
     {
         $constraint = new MatchesJsonSchema($schemaClassName, $checkMode);

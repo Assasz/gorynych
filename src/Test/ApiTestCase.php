@@ -29,7 +29,10 @@ abstract class ApiTestCase extends TestCase
 
         $this->container = $kernel->getContainer();
         $this->client = new KernelClient($kernel);
-        $this->entityManager = $this->container->get('entity_manager.adapter');
+
+        /** @var EntityManagerAdapterInterface $entityManager */
+        $entityManager = $this->container->get('entity_manager.adapter');
+        $this->entityManager = $entityManager;
 
         $this->recreateDatabaseSchema();
     }

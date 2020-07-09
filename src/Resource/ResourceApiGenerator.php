@@ -27,6 +27,7 @@ final class ResourceApiGenerator
 
     private TemplateEngineAdapterInterface $templateEngine;
     private ResourceConfigBuilder $resourcesConfigBuilder;
+    /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
 
     /**
@@ -40,7 +41,7 @@ final class ResourceApiGenerator
     }
 
     /**
-     * @param \ReflectionClass $resourceReflection
+     * @param \ReflectionClass<AbstractResource> $resourceReflection
      */
     public function generate(\ReflectionClass $resourceReflection): void
     {

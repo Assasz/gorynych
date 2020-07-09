@@ -14,6 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class FormatterFactory
 {
+    /** @var string[] */
     private array $formatters;
 
     /**
@@ -27,7 +28,7 @@ final class FormatterFactory
     /**
      * Creates formatter for first acceptable format
      *
-     * @param string[] $acceptableFormats
+     * @param string ...$acceptableFormats
      * @return FormatterInterface
      * @throws NotAcceptableHttpException if proper formatter does not exist
      */
@@ -46,7 +47,7 @@ final class FormatterFactory
 
     /**
      * @param string $file
-     * @return array
+     * @return string[]
      */
     private function parseFormatters(string $file): array
     {

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class BadRequestHttpException extends HttpException
 {
     /**
-     * @param string|array $message
+     * @param string|string[] $message
      * @param int $code
      * @param \Throwable|null $previous
      */

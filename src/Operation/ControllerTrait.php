@@ -43,7 +43,7 @@ trait ControllerTrait
      * @param Request $request
      * @param string $entityClass
      * @param string|null $definition
-     * @param array $context
+     * @param mixed[] $context
      * @param string $format
      * @return object
      */
@@ -55,10 +55,10 @@ trait ControllerTrait
     /**
      * Returns normalized representation of the resource
      *
-     * @param object|array $resource
+     * @param object|object[] $resource
      * @param string|null $definition
-     * @param array $context
-     * @return array
+     * @param mixed[] $context
+     * @return mixed[]
      */
     protected function normalizeResource($resource, string $definition = null, array $context = []): array
     {

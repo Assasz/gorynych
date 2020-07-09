@@ -14,7 +14,7 @@ interface TemplateEngineAdapterInterface
      * Renders given template
      *
      * @param string $template
-     * @param array $parameters
+     * @param mixed[] $parameters
      * @return string
      */
     public function render(string $template, array $parameters): string;

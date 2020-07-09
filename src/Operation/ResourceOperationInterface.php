@@ -35,6 +35,7 @@ interface ResourceOperationInterface
 
     /**
      * @param mixed $resource
+     * @return mixed|void
      */
     public function setResource($resource);
 

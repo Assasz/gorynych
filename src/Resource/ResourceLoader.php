@@ -13,6 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class ResourceLoader
 {
+    /** @var string[][] */
     private array $resourceMap;
     private ContainerInterface $container;
 
@@ -61,7 +62,7 @@ final class ResourceLoader
 
     /**
      * @param string $file
-     * @return array
+     * @return string[][]
      */
     private function parseResourceMap(string $file): array
     {

@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Gorynych\Resource\Generator;
 
+use Gorynych\Resource\AbstractResource;
+
 final class TemplateParams
 {
     public string $rootNamespace;
@@ -16,6 +18,10 @@ final class TemplateParams
     public string $entityNamespace;
     public string $entityClassName;
 
+    /**
+     * @param \ReflectionClass<AbstractResource> $resourceReflection
+     * @return self
+     */
     public static function fromReflection(\ReflectionClass $resourceReflection): self
     {
         $rootNamespace = current(explode('\\', $resourceReflection->getNamespaceName()));

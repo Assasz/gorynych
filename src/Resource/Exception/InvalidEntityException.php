@@ -12,10 +12,11 @@ use Throwable;
 
 class InvalidEntityException extends \LogicException
 {
+    /** @var string[]  */
     private array $errors;
 
     /**
-     * @param array $errors
+     * @param string[] $errors
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
@@ -28,7 +29,7 @@ class InvalidEntityException extends \LogicException
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getErrors(): array
     {

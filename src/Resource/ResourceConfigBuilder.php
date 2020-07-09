@@ -14,6 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 final class ResourceConfigBuilder
 {
     private FileLocatorInterface $configLocator;
+    /** @var string[][][] */
     private array $configuration;
     private ?string $selectedResource;
 
