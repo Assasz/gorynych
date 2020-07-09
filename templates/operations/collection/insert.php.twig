@@ -1,0 +1,69 @@
+<?php
+
+namespace {{ rootNamespace }}\Ports\Operation\{{ entityClassName }}Collection;
+
+use {{ entityNamespace }};
+use {{ resourceNamespace }};
+use Gorynych\Operation\AbstractOperation;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * @OA\Post(
+ *     path="/{{ entityClassName|lower ~ 's' }}",
+ *     summary="Inserts new {{ entityClassName }} item into collection resource.",
+ *     tags={"{{ entityClassName }}"},
+ *     @OA\RequestBody(
+ *         @OA\JsonContent(ref="#/components/schemas/{{ entityClassName }}"),
+ *     ),
+ *     @OA\Response(
+ *         response="201",
+ *         description="Inserted {{ entityClassName }} resource IRI.",
+ *     )
+ * )
+ */
+final class InsertOperation extends AbstractOperation
+{
+    /** @var {{ resourceClassName }} */
+    protected $resource;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMethod(): string
+    {
+        return AbstractOperation::POST_METHOD;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath(): string
+    {
+        return '/';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResponseStatus(): int
+    {
+        return Response::HTTP_CREATED;
+    }
+
+{% set entityVar = '$' ~ entityClassName|lower %}
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function __invoke(Request $request): string
+    {
+        /** @var {{ entityClassName }} {{ entityVar }} */
+        {{ entityVar }} = $this->deserializeBody($request, {{ entityClassName }}::class);
+
+        $this->validate({{ entityVar }}, '{{ entityClassName }}');
+        $this->resource->insert({{ entityVar }});
+
+        return $this->resource->getPath() . {{ entityVar }}->getId();
+    }
+}

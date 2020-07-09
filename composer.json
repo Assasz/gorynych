@@ -1,0 +1,46 @@
+{
+  "name": "assasz/gorynych",
+  "description": "Mighty REST API foundation.",
+  "type": "library",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Paweł Antosiak",
+      "email": "contact@pawelantosiak.com"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "ext-json": "*",
+    "cakephp/collection": "^3.8",
+    "filp/whoops": "^2.1",
+    "haydenpierce/class-finder": "^0.4.2",
+    "symfony/config": "^5.0",
+    "symfony/console": "^5.0",
+    "symfony/dependency-injection": "^5.0",
+    "symfony/http-foundation": "^5.0",
+    "symfony/property-access": "^5.0",
+    "symfony/property-info": "^5.0",
+    "symfony/yaml": "^5.0",
+    "twig/twig": "^3.0",
+    "zircote/swagger-php": "^3.0"
+  },
+  "require-dev": {
+    "justinrainbow/json-schema": "^5.2",
+    "phpunit/phpunit": "^9",
+    "roave/security-advisories": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gorynych\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Gorynych\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

@@ -1,0 +1,56 @@
+<?php
+
+namespace {{ rootNamespace }}\Ports\Operation\{{ entityClassName }};
+
+use {{ resourceNamespace }};
+use Gorynych\Operation\AbstractOperation;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * @OA\Get(
+ *     path="/{{ entityClassName|lower ~ 's' }}/{id}",
+ *     summary="Retrieves given {{ entityClassName }} resource.",
+ *     tags={"{{ entityClassName }}"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="The {{ entityClassName }} resource.",
+ *         @OA\JsonContent(ref="#/components/schemas/{{ entityClassName }}"),
+ *     )
+ * )
+ */
+final class GetOperation extends AbstractOperation
+{
+    /** @var {{ resourceClassName }} */
+    protected $resource;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMethod(): string
+    {
+        return AbstractOperation::GET_METHOD;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath(): string
+    {
+        return '/';
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function __invoke(Request $request): array
+    {
+        return $this->normalizeResource($this->resource->retrieve());
+    }
+}
