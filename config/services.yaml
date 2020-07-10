@@ -11,7 +11,9 @@ services:
   # this creates a service per class whose id is the fully-qualified class name
   Gorynych\:
     resource: '../src/*'
-    exclude: '../src/{Http,Test}'
+    exclude:
+      - '../src/{Http,Test}'
+      - '../src/Resource/ResourceLoader'
 
   entity_manager.adapter: '@Gorynych\Adapter\EntityManagerAdapterInterface'
 
