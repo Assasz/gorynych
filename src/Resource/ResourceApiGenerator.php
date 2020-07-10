@@ -11,19 +11,16 @@ namespace Gorynych\Resource;
 use Cake\Collection\Collection;
 use Gorynych\Adapter\TemplateEngineAdapterInterface;
 use Gorynych\Resource\ApiGenerator\TemplateParameters;
-use Symfony\Component\Yaml\Yaml;
+use Gorynych\Resource\ApiGenerator\TemplateSchemas;
 
 final class ResourceApiGenerator
 {
     private TemplateEngineAdapterInterface $templateEngine;
     private ResourceConfigBuilder $resourcesConfigBuilder;
 
-    /** @var string[][][][] */
-    private array $templateSchema;
-
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
-    private ?TemplateParameters $templateParams;
+    private ?TemplateParameters $templateParameters;
 
     /**
      * @param TemplateEngineAdapterInterface $templateEngine
@@ -33,7 +30,6 @@ final class ResourceApiGenerator
     {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
-        $this->templateSchema = $this->parseTemplateSchema();
     }
 
     /**
@@ -42,13 +38,14 @@ final class ResourceApiGenerator
     public function generate(\ReflectionClass $resourceReflection): void
     {
         $this->resourceReflection = $resourceReflection;
-        $this->templateParams = TemplateParameters::fromReflection($this->resourceReflection);
+        $this->templateParameters = TemplateParameters::fromReflection($this->resourceReflection);
 
-        foreach ($this->resolveTemplateSchema() as $configuration) {
+        foreach ($this->resolveTemplateSchema() as $schema) {
             $this->generateOperation(
-                $configuration['operation']['template'],
-                $configuration['operation']['output'],
+                $schema['operation']['template'],
+                $schema['operation']['output'],
             );
+            // TODO: generate tests
         }
 
         $this->updateConfiguration();
@@ -60,8 +57,8 @@ final class ResourceApiGenerator
      */
     private function generateOperation(string $templateName, string $outputPath): void
     {
-        $operationPath = dirname(__DIR__, 4) . sprintf($outputPath, $this->templateParams->entityClassName);
-        $operationContent = $this->templateEngine->render($templateName, (array)$this->templateParams);
+        $operationPath = dirname(__DIR__, 4) . sprintf($outputPath, $this->templateParameters->entityClassName);
+        $operationContent = $this->templateEngine->render($templateName, (array)$this->templateParameters);
 
         $this->write($operationPath, $operationContent);
     }
@@ -71,14 +68,14 @@ final class ResourceApiGenerator
      */
     private function updateConfiguration(): void
     {
-        $templateParams = $this->templateParams;
+        $templateParameters = $this->templateParameters;
 
         $newConfigRecords = (new Collection($this->resolveTemplateSchema()))
             ->unfold()
-            ->map(static function (array $schema) use ($templateParams): string {
-                return $templateParams->rootNamespace .
+            ->map(static function (array $schema) use ($templateParameters): string {
+                return $templateParameters->rootNamespace .
                     str_replace('/', '\\',
-                        sprintf($schema['operation']['output'], $templateParams->entityClassName));
+                        sprintf($schema['operation']['output'], $templateParameters->entityClassName));
             })
             ->toList();
 
@@ -95,11 +92,11 @@ final class ResourceApiGenerator
     private function resolveTemplateSchema(): array
     {
         if ($this->resourceReflection->implementsInterface(CollectionResourceInterface::class)) {
-            return $this->templateSchema['collectionResource'];
+            return TemplateSchemas::COLLECTION_RESOURCE_SCHEMA;
         }
 
         if ($this->resourceReflection->implementsInterface(ResourceInterface::class)) {
-            return $this->templateSchema['itemResource'];
+            return TemplateSchemas::ITEM_RESOURCE_SCHEMA;
         }
 
         throw new \LogicException('Unknown resource type.');
@@ -121,13 +118,5 @@ final class ResourceApiGenerator
         if (false === file_exists($path)) {
             file_put_contents($path, $content);
         }
-    }
-
-    /**
-     * @return string[][][][]
-     */
-    private function parseTemplateSchema(): array
-    {
-        return Yaml::parse(__DIR__ . '/ApiGenerator/template_schema.yaml');
     }
 }
