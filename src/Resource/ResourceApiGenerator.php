@@ -41,26 +41,26 @@ final class ResourceApiGenerator
         $this->templateParameters = TemplateParameters::fromReflection($this->resourceReflection);
 
         foreach ($this->resolveTemplateSchema() as $schema) {
-            $this->generateOperation(
-                $schema['operation']['template'],
-                $schema['operation']['output'],
-            );
-            // TODO: generate tests
+            $this->generateFromSingleSchema($schema);
         }
 
         $this->updateConfiguration();
     }
 
     /**
-     * @param string $templateName
-     * @param string $outputPath
+     * Generates all items specified by given schema
+     * That includes resource operation and its corresponding test case
+     *
+     * @param string[][] $schema
      */
-    private function generateOperation(string $templateName, string $outputPath): void
+    private function generateFromSingleSchema(array $schema): void
     {
-        $operationPath = dirname(__DIR__, 4) . sprintf($outputPath, $this->templateParameters->entityClassName);
-        $operationContent = $this->templateEngine->render($templateName, (array)$this->templateParameters);
+        foreach ($schema as $item) {
+            $path = sprintf(dirname(__DIR__, 4) . $item['output'], $this->templateParameters->entityClassName);
+            $content = $this->templateEngine->render($item['template'], (array)$this->templateParameters);
 
-        $this->write($operationPath, $operationContent);
+            $this->write($path, $content);
+        }
     }
 
     /**
