@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class KernelClient
 {
-    private const REQUEST_HEADERS = [
+    private const DEFAULT_REQUEST_HEADERS = [
         'HTTP_ACCEPT' => 'application/json',
         'CONTENT_TYPE' => 'application/json',
     ];
@@ -57,8 +57,21 @@ final class KernelClient
             $options['parameters'] ?? [],
             $options['cookies'] ?? [],
             $options['files'] ?? [],
-            array_merge(self::REQUEST_HEADERS, $options['headers'] ?? []),
-            (array_key_exists('body', $options)) ? json_encode($options['body']) : null
+            array_merge(self::DEFAULT_REQUEST_HEADERS, $options['headers'] ?? []),
+            $this->buildRequestBody($options)
         );
+    }
+
+    /**
+     * @param string[] $options
+     * @return string|null
+     */
+    private function buildRequestBody(array $options): ?string
+    {
+        if (true === array_key_exists('json', $options)) {
+            $body = json_encode($options['json']);
+        }
+
+        return $body ?? null;
     }
 }
