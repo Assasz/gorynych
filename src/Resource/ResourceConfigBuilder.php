@@ -89,8 +89,8 @@ final class ResourceConfigBuilder
         }
 
         $this->configuration['resources'][$this->selectedResource] = array_values(array_unique(array_merge(
+            $this->configuration['resources'][$this->selectedResource],
             $operations,
-            $this->configuration['resources'][$this->selectedResource]
         )));
 
         return $this;

@@ -35,7 +35,7 @@ trait ApiAssertionsTrait
     public static function assertMatchesCollectionJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
     {
         $data = json_decode($response->getContent(), true);
-        $data = (count($data) === 0) ? $data : $data[0];
+        $data = (0 === count($data)) ? $data : $data[0];
 
         self::matchesJsonSchema($data, $schemaClassName, $checkMode, $message);
     }

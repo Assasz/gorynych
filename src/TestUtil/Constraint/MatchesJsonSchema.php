@@ -77,23 +77,23 @@ final class MatchesJsonSchema extends Constraint
      */
     private function normalizeJson($document)
     {
-        if (is_scalar($document) || \is_object($document)) {
+        if (true === is_scalar($document) || true === is_object($document)) {
             return $document;
         }
 
-        if (!\is_array($document)) {
+        if (false === is_array($document)) {
             throw new \InvalidArgumentException('Document must be scalar, array or object.');
         }
 
         $document = json_encode($document);
 
-        if (!\is_string($document)) {
+        if (false === is_string($document)) {
             throw new \UnexpectedValueException('JSON encode failed.');
         }
 
         $document = json_decode($document);
 
-        if (!\is_array($document) && !\is_object($document)) {
+        if (false === is_array($document) && false === is_object($document)) {
             throw new \UnexpectedValueException('JSON decode failed.');
         }
 
