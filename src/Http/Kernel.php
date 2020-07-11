@@ -15,7 +15,6 @@ use Gorynych\Resource\ResourceLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,10 +52,10 @@ abstract class Kernel
     }
 
     /**
-     * @return ContainerInterface
+     * @return ContainerBuilder
      * @throws \RuntimeException if kernel is not booted
      */
-    public function getContainer(): ContainerInterface
+    public function getContainer(): ContainerBuilder
     {
         if (false === $this->booted) {
             throw new \RuntimeException('Unable to obtain container when kernel is not booted. Please, boot kernel first.');
