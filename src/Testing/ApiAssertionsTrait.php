@@ -6,9 +6,9 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\TestUtil;
+namespace Gorynych\Testing;
 
-use Gorynych\TestUtil\Constraint\MatchesJsonSchema;
+use Gorynych\Testing\Constraint\MatchesJsonSchema;
 use Symfony\Component\HttpFoundation\Response;
 
 trait ApiAssertionsTrait

@@ -12,7 +12,7 @@ services:
   Gorynych\:
     resource: '../src/*'
     exclude:
-      - '../src/{Http,TestUtil}'
+      - '../src/{Http,Testing}'
       - '../src/Resource/ResourceLoader'
 
   Gorynych\Command\:

@@ -6,9 +6,9 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\TestUtil\Constraint;
+namespace Gorynych\Testing\Constraint;
 
-use Gorynych\TestUtil\TestAnalysis;
+use Gorynych\Testing\TestAnalysis;
 use JsonSchema\Validator;
 use PHPUnit\Framework\Constraint\Constraint;
 

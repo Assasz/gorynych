@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\TestUtil;
+namespace Gorynych\Testing;
 
 use OpenApi\Analysis;
 

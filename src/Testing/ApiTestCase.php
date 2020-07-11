@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\TestUtil;
+namespace Gorynych\Testing;
 
 use Gorynych\Adapter\EntityManagerAdapterInterface;
 use Gorynych\Http\Kernel;
