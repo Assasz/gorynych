@@ -20,3 +20,13 @@ services:
   Gorynych\Resource\ResourceConfigBuilder:
     arguments:
       $configLocator: '@kernel.config_locator'
+
+  gorynych.command.generate_api:
+    class: Gorynych\Command\GenerateApiCommand
+    tags:
+      - { name: console.command }
+
+  gorynych.command.load_fixtures:
+    class: Gorynych\Command\LoadFixturesCommand
+    tags:
+      - { name: console.command }
