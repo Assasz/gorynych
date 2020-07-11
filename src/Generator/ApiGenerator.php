@@ -6,14 +6,16 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\Resource;
+namespace Gorynych\Generator;
 
 use Cake\Collection\Collection;
 use Gorynych\Adapter\TemplateEngineAdapterInterface;
-use Gorynych\Resource\ApiGenerator\TemplateParameters;
-use Gorynych\Resource\ApiGenerator\TemplateSchemas;
+use Gorynych\Resource\AbstractResource;
+use Gorynych\Resource\CollectionResourceInterface;
+use Gorynych\Resource\ResourceConfigBuilder;
+use Gorynych\Resource\ResourceInterface;
 
-final class ResourceApiGenerator
+final class ApiGenerator
 {
     private TemplateEngineAdapterInterface $templateEngine;
     private ResourceConfigBuilder $resourcesConfigBuilder;
@@ -22,10 +24,6 @@ final class ResourceApiGenerator
     private ?\ReflectionClass $resourceReflection;
     private ?TemplateParameters $templateParameters;
 
-    /**
-     * @param TemplateEngineAdapterInterface $templateEngine
-     * @param ResourceConfigBuilder $resourcesConfigBuilder
-     */
     public function __construct(TemplateEngineAdapterInterface $templateEngine, ResourceConfigBuilder $resourcesConfigBuilder)
     {
         $this->templateEngine = $templateEngine;
@@ -45,6 +43,7 @@ final class ResourceApiGenerator
         }
 
         $this->updateConfiguration();
+        $this->updateDocumentation();
     }
 
     /**
@@ -56,7 +55,7 @@ final class ResourceApiGenerator
     private function generateFromSingleSchema(array $schema): void
     {
         foreach ($schema as $item) {
-            $path = sprintf(dirname(__DIR__, 4) . $item['output'], $this->templateParameters->entityClassName);
+            $path = sprintf($_ENV['PROJECT_DIR'] . $item['output'], $this->templateParameters->entityClassName);
             $content = $this->templateEngine->render($item['template'], (array)$this->templateParameters);
 
             $this->write($path, $content);
@@ -83,6 +82,19 @@ final class ResourceApiGenerator
             ->selectResource($this->resourceReflection->getName())
             ->mergeOperations(...$newConfigRecords)
             ->save();
+    }
+
+    /**
+     * Updates openapi.yaml documentation file
+     */
+    private function updateDocumentation(): void
+    {
+        $docs = \OpenApi\scan([
+            "{$_ENV['PROJECT_DIR']}/src",
+            "{$_ENV['PROJECT_DIR']}/public",
+        ]);
+
+        file_put_contents("{$_ENV['PROJECT_DIR']}/openapi/openapi.yaml", $docs->toYaml());
     }
 
     /**

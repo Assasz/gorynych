@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\Resource\ApiGenerator;
+namespace Gorynych\Generator;
 
 use Gorynych\Resource\AbstractResource;
 

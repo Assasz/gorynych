@@ -102,12 +102,14 @@ abstract class Kernel
     }
 
     /**
+     * Returns FileLocator for project config directory
+     *
      * @return FileLocatorInterface
      */
     abstract public function getConfigLocator(): FileLocatorInterface;
 
     /**
-     * Loads external configuration files
+     * Loads project configuration files
      */
     abstract protected function loadConfiguration(): void;
 

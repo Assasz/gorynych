@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Command;
 
-use Gorynych\Resource\ResourceApiGenerator;
+use Gorynych\Generator\ApiGenerator;
 use HaydenPierce\ClassFinder\ClassFinder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,9 +19,9 @@ final class GenerateApiCommand extends Command
 {
     protected static $defaultName = 'gorynych:generate-api';
 
-    private ResourceApiGenerator $resourceApiGenerator;
+    private ApiGenerator $resourceApiGenerator;
 
-    public function __construct(ResourceApiGenerator $resourceApiGenerator)
+    public function __construct(ApiGenerator $resourceApiGenerator)
     {
         parent::__construct();
 
