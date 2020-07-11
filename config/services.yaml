@@ -17,7 +17,7 @@ services:
 
   entity_manager.adapter: '@Gorynych\Adapter\EntityManagerAdapterInterface'
 
-  Symfony\Component\Config\FileLocatorInterface $configLocator: '@kernel.config_locator';
+  Symfony\Component\Config\FileLocatorInterface $configLocator: '@kernel.config_locator'
 
   gorynych.command.generate_api:
     class: Gorynych\Command\GenerateApiCommand
