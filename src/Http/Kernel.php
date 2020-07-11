@@ -22,9 +22,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class Kernel
 {
-    private ?ContainerBuilder $container;
-    private string $env;
-    private bool $booted = false;
+    protected ?ContainerBuilder $container;
+    protected string $env;
+    protected bool $booted = false;
 
     /**
      * @param string $env
