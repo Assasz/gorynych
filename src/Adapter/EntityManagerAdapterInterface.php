@@ -24,7 +24,7 @@ interface EntityManagerAdapterInterface
      * Loads fixtures into persistence storage
      *
      * @param string[] $files
-     * @return int
+     * @return int Number of loaded fixtures
      */
     public function loadFixtures(array $files): int;
 }
