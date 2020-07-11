@@ -19,15 +19,20 @@ final class ApiGenerator
 {
     private TemplateEngineAdapterInterface $templateEngine;
     private ResourceConfigBuilder $resourcesConfigBuilder;
+    private FileWriter $fileWriter;
 
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
     private ?TemplateParameters $templateParameters;
 
-    public function __construct(TemplateEngineAdapterInterface $templateEngine, ResourceConfigBuilder $resourcesConfigBuilder)
-    {
+    public function __construct(
+        TemplateEngineAdapterInterface $templateEngine,
+        ResourceConfigBuilder $resourcesConfigBuilder,
+        FileWriter $fileWriter
+    ) {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
+        $this->fileWriter = $fileWriter;
     }
 
     /**
@@ -58,7 +63,7 @@ final class ApiGenerator
             $path = sprintf($_ENV['PROJECT_DIR'] . $item['output'], $this->templateParameters->entityClassName);
             $content = $this->templateEngine->render($item['template'], (array)$this->templateParameters);
 
-            $this->write($path, $content);
+            $this->fileWriter->write($path, $content);
         }
     }
 
@@ -74,7 +79,10 @@ final class ApiGenerator
             ->map(static function (array $schema) use ($templateParameters): string {
                 return $templateParameters->rootNamespace .
                     str_replace('/', '\\',
-                        sprintf($schema['operation']['output'], $templateParameters->entityClassName));
+                        sprintf(
+                            rtrim($schema['operation']['output'], '.php'),
+                            $templateParameters->entityClassName
+                        ));
             })
             ->toList();
 
@@ -94,7 +102,9 @@ final class ApiGenerator
             "{$_ENV['PROJECT_DIR']}/public",
         ]);
 
-        file_put_contents("{$_ENV['PROJECT_DIR']}/openapi/openapi.yaml", $docs->toYaml());
+        $this->fileWriter
+            ->forceOverwrite()
+            ->write("{$_ENV['PROJECT_DIR']}/openapi/openapi.yaml", $docs->toYaml());
     }
 
     /**
@@ -112,23 +122,5 @@ final class ApiGenerator
         }
 
         throw new \LogicException('Unknown resource type.');
-    }
-
-    /**
-     * @param string $path
-     * @param string $content
-     */
-    private function write(string $path, string $content): void
-    {
-        $path .= '.php';
-        $dir = dirname($path);
-
-        if (false === is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-
-        if (false === file_exists($path)) {
-            file_put_contents($path, $content);
-        }
     }
 }
