@@ -11,6 +11,7 @@ namespace Gorynych\Command;
 use Gorynych\Generator\ApiGenerator;
 use HaydenPierce\ClassFinder\ClassFinder;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,13 +20,13 @@ final class GenerateApiCommand extends Command
 {
     protected static $defaultName = 'gorynych:generate-api';
 
-    private ApiGenerator $resourceApiGenerator;
+    private ApiGenerator $apiGenerator;
 
-    public function __construct(ApiGenerator $resourceApiGenerator)
+    public function __construct(ApiGenerator $apiGenerator)
     {
         parent::__construct();
 
-        $this->resourceApiGenerator = $resourceApiGenerator;
+        $this->apiGenerator = $apiGenerator;
     }
 
     protected function configure(): void
@@ -42,23 +43,26 @@ final class GenerateApiCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $resourceApiGenerator = $this->resourceApiGenerator;
+        $apiGenerator = $this->apiGenerator;
         $resources = ClassFinder::getClassesInNamespace($input->getArgument('resourceNamespace'), ClassFinder::RECURSIVE_MODE);
+        $progressBar = new ProgressBar($output, count($resources));
 
         array_walk(
             $resources,
-            static function (string $resource) use ($resourceApiGenerator): void {
+            static function (string $resource) use ($apiGenerator, $progressBar): void {
                 $resourceReflection = new \ReflectionClass($resource);
 
                 if (true === $resourceReflection->isInterface() || true === $resourceReflection->isAbstract()) {
                     return;
                 }
 
-                $resourceApiGenerator->generate($resourceReflection);
+                $apiGenerator->generate($resourceReflection);
+                $progressBar->advance();
             }
         );
 
-        $output->writeln('API generated');
+        $progressBar->finish();
+        $output->writeln(['', '<comment>API generation done</comment>']);
 
         return 0;
     }

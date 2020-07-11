@@ -12,19 +12,18 @@ services:
   Gorynych\:
     resource: '../src/*'
     exclude:
-      - '../src/{Http,Test}'
+      - '../src/{Http,TestUtil}'
       - '../src/Resource/ResourceLoader'
 
-  entity_manager.adapter: '@Gorynych\Adapter\EntityManagerAdapterInterface'
-
-  Symfony\Component\Config\FileLocatorInterface $configLocator: '@kernel.config_locator'
-
-  gorynych.command.generate_api:
-    class: Gorynych\Command\GenerateApiCommand
+  Gorynych\Command\:
+    resource: '../src/Command'
+    public: true
     tags:
       - { name: console.command }
 
-  gorynych.command.load_fixtures:
-    class: Gorynych\Command\LoadFixturesCommand
-    tags:
-      - { name: console.command }
+  kernel.config_locator:
+    synthetic: true
+
+  Gorynych\Resource\ResourceConfigBuilder:
+    arguments:
+      $configLocator: '@kernel.config_locator'

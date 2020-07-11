@@ -44,7 +44,7 @@ final class LoadFixturesCommand extends Command
         $env = $input->getOption('env') ?? 'dev';
         $loadedFixtures = $this->entityManager->loadFixtures(["_{$env}.yaml"]);
 
-        $output->writeln("Fixtures loaded: {$loadedFixtures}");
+        $output->writeln("<comment>Fixtures loaded: {$loadedFixtures}</comment>");
 
         return 0;
     }

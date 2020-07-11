@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace {{ rootNamespace }}\Ports\Operation\{{ entityClassName }}Collection;
 
 use {{ resourceNamespace }};
@@ -43,7 +45,7 @@ final class GetOperation extends AbstractOperation
 
     /**
      * @param Request $request
-     * @return array
+     * @return mixed[]
      */
     public function __invoke(Request $request): array
     {

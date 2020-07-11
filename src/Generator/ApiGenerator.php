@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Gorynych\Generator;
 
 use Cake\Collection\Collection;
-use Gorynych\Adapter\TemplateEngineAdapterInterface;
+use Gorynych\Adapter\TwigAdapter;
 use Gorynych\Resource\AbstractResource;
 use Gorynych\Resource\CollectionResourceInterface;
 use Gorynych\Resource\ResourceConfigBuilder;
@@ -17,7 +17,7 @@ use Gorynych\Resource\ResourceInterface;
 
 final class ApiGenerator
 {
-    private TemplateEngineAdapterInterface $templateEngine;
+    private TwigAdapter $templateEngine;
     private ResourceConfigBuilder $resourcesConfigBuilder;
     private FileWriter $fileWriter;
 
@@ -26,7 +26,7 @@ final class ApiGenerator
     private ?TemplateParameters $templateParameters;
 
     public function __construct(
-        TemplateEngineAdapterInterface $templateEngine,
+        TwigAdapter $templateEngine,
         ResourceConfigBuilder $resourcesConfigBuilder,
         FileWriter $fileWriter
     ) {
@@ -80,12 +80,11 @@ final class ApiGenerator
         $templateParameters = $this->templateParameters;
 
         $newConfigRecords = (new Collection($this->resolveTemplateSchema()))
-            ->unfold()
-            ->map(static function (array $schema) use ($templateParameters): string {
-                return $templateParameters->rootNamespace .
+            ->map(static function (array $operationSchema) use ($templateParameters): string {
+                return $templateParameters->rootNamespace . '\\' .
                     str_replace('/', '\\',
                         sprintf(
-                            rtrim($schema['operation']['output'], '.php'),
+                            rtrim(ltrim($operationSchema['operation']['output'], '/src'), '.php'),
                             $templateParameters->entityClassName
                         ));
             })

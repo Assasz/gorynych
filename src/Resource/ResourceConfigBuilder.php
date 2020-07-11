@@ -55,9 +55,11 @@ final class ResourceConfigBuilder
      */
     public function selectResource(string $resource): self
     {
-        $this->selectedResource = (false === $this->hasResource($resource)) ?
-            $this->appendResource($resource)->selectResource($resource) :
-            $resource;
+        if (false === $this->hasResource($resource)) {
+            return $this->appendResource($resource)->selectResource($resource);
+        }
+
+        $this->selectedResource = $resource;
 
         return $this;
     }
