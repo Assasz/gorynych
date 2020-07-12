@@ -12,6 +12,7 @@ use Gorynych\Http\Exception\HttpException;
 use Gorynych\Http\Exception\NotAcceptableHttpException;
 use Gorynych\Http\Formatter\FormatterFactory;
 use Gorynych\Resource\ResourceLoader;
+use Gorynych\Util\ProblemDetails;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -88,14 +89,15 @@ abstract class Kernel
         try {
             $operation = $router->findOperation($request);
             $output = $operation($request);
-        } catch (HttpException $e) {
-            return $formatter->format(['error' => $e->getMessage()], $e->getStatusCode());
-        } catch (\Throwable $e) {
-            if ('prod' === $this->env) {
-                return $formatter->format(['error' => 'Internal server error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Throwable $t) {
+            if ('prod' !== $this->env) {
+                throw $t;
             }
 
-            throw $e;
+            return $formatter->format(
+                ProblemDetails::fromThrowable($t),
+                $t instanceof HttpException ? $t->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         return $formatter->format($output, $operation->getResponseStatus());

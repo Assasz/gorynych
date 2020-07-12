@@ -18,6 +18,12 @@ final class JsonFormatter implements FormatterInterface
      */
     public function format($content, int $statusCode): Response
     {
-        return new JsonResponse($content, $statusCode);
+        $response = new JsonResponse($content, $statusCode);
+
+        if ($statusCode < 600 && $statusCode > 399) {
+            $response->headers->set('Content-Type', 'application/problem+json');
+        }
+
+        return $response;
     }
 }
