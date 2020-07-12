@@ -32,12 +32,26 @@ class TwigAdapter
         return $this->twig->render($template, $parameters);
     }
 
+    /**
+     * Setups Twig template engine
+     */
     protected function setup(): void
     {
         $this->twig = new Environment(
-            new FilesystemLoader(dirname(__DIR__, 2) . '/templates'), [
+            new FilesystemLoader($this->getGorynychTemplatesPath()), [
                 'cache' => dirname(__DIR__, 2) . '/var/twig',
             ]
         );
+    }
+
+    /**
+     * Returns path to Gorynych templates
+     * This path must be included in setup process, if you want to take advantage of ApiGenerator
+     *
+     * @return string
+     */
+    final protected function getGorynychTemplatesPath(): string
+    {
+        return dirname(__DIR__, 2) . '/templates';
     }
 }

@@ -15,6 +15,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class GenerateApiCommand extends Command
 {
@@ -45,11 +46,13 @@ final class GenerateApiCommand extends Command
     {
         $apiGenerator = $this->apiGenerator;
         $resources = ClassFinder::getClassesInNamespace($input->getArgument('resourceNamespace'), ClassFinder::RECURSIVE_MODE);
-        $progressBar = new ProgressBar($output, count($resources));
+
+        $io = new SymfonyStyle($input, $output);
+        $io->progressStart();
 
         array_walk(
             $resources,
-            static function (string $resource) use ($apiGenerator, $progressBar): void {
+            static function (string $resource) use ($apiGenerator, $io): void {
                 $resourceReflection = new \ReflectionClass($resource);
 
                 if (true === $resourceReflection->isInterface() || true === $resourceReflection->isAbstract()) {
@@ -57,12 +60,12 @@ final class GenerateApiCommand extends Command
                 }
 
                 $apiGenerator->generate($resourceReflection);
-                $progressBar->advance();
+                $io->progressAdvance();
             }
         );
 
-        $progressBar->finish();
-        $output->writeln(['', '<comment>API generation done</comment>']);
+        $io->progressFinish();
+        $io->success('API generation done');
 
         return 0;
     }

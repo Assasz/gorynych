@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
  *         response="200",
  *         description="Replaced {{ entityClassName }} resource IRI.",
  *         @OA\JsonContent(
- *             example={"{{ entityClassName|lower }}":"/{{ entityClassName|lower ~ 's' }}/1"}
+ *             example={"@id":"/{{ entityClassName|lower ~ 's' }}/1"}
  *         ),
  *     ),
  * )
@@ -57,9 +57,9 @@ final class ReplaceOperation extends AbstractOperation
 {% set newEntityVar = '$new' ~ entityClassName %}
     /**
      * @param Request $request
-     * @return string
+     * @return string[]
      */
-    public function __invoke(Request $request): string
+    public function __invoke(Request $request): array
     {
         {{ entityVar }} = $this->resource->retrieve();
 
@@ -70,6 +70,6 @@ final class ReplaceOperation extends AbstractOperation
         $this->validate({{ newEntityVar }}, '{{ entityClassName }}');
         $this->resource->replace({{ newEntityVar }});
 
-        return $this->resource->getPath();
+        return ['@id' => $this->getPath()];
     }
 }

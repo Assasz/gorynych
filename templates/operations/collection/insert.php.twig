@@ -21,9 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  *     @OA\Response(
  *         response="201",
  *         description="Inserted {{ entityClassName }} resource IRI.",
- *         @OA\JsonContent(
- *             example={"{{ entityClassName|lower }}":"/{{ entityClassName|lower ~ 's' }}/1"}
- *         ),
+ *         @OA\JsonContent(example={"@id":"/{{ entityClassName|lower ~ 's' }}/1"}),
  *     ),
  * )
  */
@@ -69,6 +67,6 @@ final class InsertOperation extends AbstractOperation
         $this->validate({{ entityVar }}, '{{ entityClassName }}');
         $this->resource->insert({{ entityVar }});
 
-        return $this->resource->getPath() . {{ entityVar }}->getId();
+        return ['@id' => $this->resource->getPath() . {{ entityVar }}->getId()];
     }
 }
