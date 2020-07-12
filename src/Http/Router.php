@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class Router
 {
     private ResourceLoader $resourceLoader;
+    private ?Request $request;
 
     public function __construct(ResourceLoader $resourceLoader)
     {
@@ -34,17 +35,18 @@ final class Router
      */
     public function findOperation(Request $request): ResourceOperationInterface
     {
+        $this->request = $request;
         $operation = null;
 
         foreach ($this->resourceLoader->getResources() as $resourceClass) {
             try {
                 $resource = $this->resourceLoader->loadResource($resourceClass);
-                $operation = $this
-                    ->filterOperationsByMethod(
-                        $this->filterOperationsByUri($resource, $request->getPathInfo()),
-                        $request->getMethod()
-                    )
-                    ->setResource($resource);
+                $operation = $this->filterOperationsByMethod($this->filterOperationsByUri($resource));
+
+                $this->matchUri($resource->getPath(), $operation->getPath(), $matches);
+
+                $resource->id = $matches['id'] ?? null;
+                $operation->setResource($resource);
 
                 break;
             } catch (NotFoundHttpException $e) {
@@ -60,25 +62,19 @@ final class Router
     }
 
     /**
-     * Returns resource operations matching given URI
+     * Returns resource operations matching request URI
      *
      * @param AbstractResource $resource
-     * @param string $uri
      * @return Collection
      * @throws NotFoundHttpException if even one operation does not match URI pattern
      */
-    private function filterOperationsByUri(AbstractResource $resource, string $uri): Collection
+    private function filterOperationsByUri(AbstractResource $resource): Collection
     {
+        $self = $this;
+
         $operations = (new Collection($resource->getOperations()))->filter(
-            static function (ResourceOperationInterface $operation) use ($uri, $resource) {
-                $resourcePath = self::normalize($resource->getPath());
-                $operationPath = self::normalize($operation->getPath());
-
-                if (true === $isMatch = (bool)preg_match("#^{$resourcePath}{$operationPath}$#", self::normalize($uri), $matches)) {
-                    $resource->id = $matches['id'] ?? null;
-                }
-
-                return $isMatch;
+            static function (ResourceOperationInterface $operation) use ($self, $resource) {
+                return $self->matchUri($resource->getPath(), $operation->getPath());
             }
         );
 
@@ -90,15 +86,16 @@ final class Router
     }
 
     /**
-     * Returns resource operation matching given HTTP method
+     * Returns resource operation matching request HTTP method
      *
      * @param Collection $operations matching request URI
-     * @param string $method
      * @return ResourceOperationInterface
      * @throws MethodNotAllowedHttpException if method does not match the method of any available operations
      */
-    private function filterOperationsByMethod(Collection $operations, string $method): ResourceOperationInterface
+    private function filterOperationsByMethod(Collection $operations): ResourceOperationInterface
     {
+        $method = $this->request->getMethod();
+
         $operations = $operations->filter(
             static function (ResourceOperationInterface $operation) use ($method) {
                 return $method === $operation->getMethod();
@@ -113,10 +110,26 @@ final class Router
     }
 
     /**
+     * Returns TRUE if provided paths combination matches request URI
+     *
+     * @param string $resourcePath
+     * @param string $operationPath
+     * @param mixed[]|null $matches
+     * @return bool
+     */
+    private function matchUri(string $resourcePath, string $operationPath, &$matches = null): bool
+    {
+        $resourcePath = self::normalizeUri($resourcePath);
+        $operationPath = self::normalizeUri($operationPath);
+
+        return (bool) preg_match("#^{$resourcePath}{$operationPath}$#", self::normalizeUri($this->request->getPathInfo()), $matches);
+    }
+
+    /**
      * @param string $path
      * @return string
      */
-    private static function normalize(string $path): string
+    private static function normalizeUri(string $path): string
     {
         return rtrim($path, '/');
     }
