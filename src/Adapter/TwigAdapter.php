@@ -13,7 +13,7 @@ use Twig\Loader\FilesystemLoader;
 
 class TwigAdapter
 {
-    private Environment $twig;
+    protected Environment $twig;
 
     public function __construct()
     {
@@ -32,7 +32,7 @@ class TwigAdapter
         return $this->twig->render($template, $parameters);
     }
 
-    private function setup(): void
+    protected function setup(): void
     {
         $this->twig = new Environment(
             new FilesystemLoader(dirname(__DIR__, 2) . '/templates'), [

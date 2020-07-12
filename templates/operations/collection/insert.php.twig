@@ -21,7 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
  *     @OA\Response(
  *         response="201",
  *         description="Inserted {{ entityClassName }} resource IRI.",
- *     )
+ *         @OA\JsonContent(
+ *             example={"{{ entityClassName|lower }}":"/{{ entityClassName|lower ~ 's' }}/1"}
+ *         ),
+ *     ),
  * )
  */
 final class InsertOperation extends AbstractOperation

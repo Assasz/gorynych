@@ -17,13 +17,13 @@ use Symfony\Component\HttpFoundation\Request;
  *         name="id",
  *         in="path",
  *         required=true,
- *         @OA\Schema(type="integer")
+ *         @OA\Schema(type="integer"),
  *     ),
  *     @OA\Response(
  *         response="200",
  *         description="The {{ entityClassName }} resource.",
  *         @OA\JsonContent(ref="#/components/schemas/{{ entityClassName }}"),
- *     )
+ *     ),
  * )
  */
 final class GetOperation extends AbstractOperation

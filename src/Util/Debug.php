@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Util;
 
+use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -16,8 +17,10 @@ final class Debug
 {
     /**
      * Enables debug mode for web environment (only for non-production)
+     *
+     * @param HandlerInterface|null $handler custom error handler
      */
-    public static function web(): void
+    public static function web(HandlerInterface $handler = null): void
     {
         if ('prod' === ($_ENV['APP_ENV'] ?? 'dev')) {
             error_reporting(0);
@@ -26,7 +29,7 @@ final class Debug
             return;
         }
 
-        (new Run())->pushHandler(new PrettyPageHandler())->register();
+        (new Run())->pushHandler($handler ?? new PrettyPageHandler())->register();
     }
 
     /**

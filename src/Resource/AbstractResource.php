@@ -22,6 +22,8 @@ abstract class AbstractResource
 
     /**
      * Returns path of the resource
+     * Item resources should follow given pattern:
+     * '/resources/' . $this->id ?? self::NUMERIC_ID (or any other regex)
      *
      * @return string
      */

@@ -8,31 +8,31 @@ declare(strict_types=1);
 
 namespace Gorynych\Operation;
 
-use Gorynych\Adapter\SerializerAdapterInterface;
-use Gorynych\Adapter\ValidatorAdapterInterface;
+use Gorynych\Adapter\SerializerAdapter;
+use Gorynych\Adapter\ValidatorAdapter;
 use Gorynych\Resource\Exception\InvalidEntityException;
 use Gorynych\Http\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
 trait ControllerTrait
 {
-    protected SerializerAdapterInterface $serializer;
-    protected ValidatorAdapterInterface $validator;
+    protected SerializerAdapter $serializer;
+    protected ValidatorAdapter $validator;
 
     /**
      * @required
-     * @param SerializerAdapterInterface $serializer
+     * @param SerializerAdapter $serializer
      */
-    public function setSerializer(SerializerAdapterInterface $serializer): void
+    public function setSerializer(SerializerAdapter $serializer): void
     {
         $this->serializer = $serializer;
     }
 
     /**
      * @required
-     * @param ValidatorAdapterInterface $validator
+     * @param ValidatorAdapter $validator
      */
-    public function setValidator(ValidatorAdapterInterface $validator): void
+    public function setValidator(ValidatorAdapter $validator): void
     {
         $this->validator = $validator;
     }

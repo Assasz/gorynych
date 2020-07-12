@@ -27,3 +27,11 @@ services:
   Gorynych\Resource\ResourceConfigBuilder:
     arguments:
       $configLocator: '@kernel.config_locator'
+
+  Gorynych\Adapter\SerializerAdapter:
+    arguments:
+      $configLocator: '@kernel.config_locator'
+
+  Gorynych\Adapter\ValidatorAdapter:
+    arguments:
+      $configLocator: '@kernel.config_locator'

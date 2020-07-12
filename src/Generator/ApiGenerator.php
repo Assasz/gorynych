@@ -103,7 +103,7 @@ final class ApiGenerator
     {
         $docs = \OpenApi\scan([
             "{$_ENV['PROJECT_DIR']}/src",
-            "{$_ENV['PROJECT_DIR']}/public",
+            "{$_ENV['PROJECT_DIR']}/config",
         ]);
 
         $this->fileWriter

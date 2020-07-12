@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  *         name="id",
  *         in="path",
  *         required=true,
- *         @OA\Schema(type="integer")
+ *         @OA\Schema(type="integer"),
  *     ),
  *     @OA\RequestBody(
  *         @OA\JsonContent(ref="#/components/schemas/{{ entityClassName }}"),
@@ -26,7 +26,10 @@ use Symfony\Component\HttpFoundation\Request;
  *     @OA\Response(
  *         response="200",
  *         description="Replaced {{ entityClassName }} resource IRI.",
- *     )
+ *         @OA\JsonContent(
+ *             example={"{{ entityClassName|lower }}":"/{{ entityClassName|lower ~ 's' }}/1"}
+ *         ),
+ *     ),
  * )
  */
 final class ReplaceOperation extends AbstractOperation
@@ -67,6 +70,6 @@ final class ReplaceOperation extends AbstractOperation
         $this->validate({{ newEntityVar }}, '{{ entityClassName }}');
         $this->resource->replace({{ newEntityVar }});
 
-        return $this->resource::PATH . {{ newEntityVar }}->getId();
+        return $this->resource->getPath();
     }
 }
