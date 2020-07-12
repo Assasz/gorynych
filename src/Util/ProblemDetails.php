@@ -23,21 +23,14 @@ final class ProblemDetails
     public int $status;
     public string $detail;
 
-    public function __construct(string $type, string $title, int $status, string $detail)
-    {
-        $this->type = $type;
-        $this->title = $title;
-        $this->status = $status;
-        $this->detail = $detail;
-    }
-
     public static function fromThrowable(\Throwable $throwable): self
     {
-        return new self(
-            'https://tools.ietf.org/html/rfc2616#section-10',
-            'An error occurred',
-            $throwable instanceof HttpException ? $throwable->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR,
-            $throwable instanceof HttpException ? $throwable->getMessage() : 'Internal server error'
-        );
+        $self = new self();
+        $self->type = 'https://tools.ietf.org/html/rfc2616#section-10';
+        $self->title = 'An error occurred';
+        $self->status = $throwable instanceof HttpException ? $throwable->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+        $self->detail = $throwable instanceof HttpException ? $throwable->getMessage() : 'Internal server error';
+
+        return $self;
     }
 }
