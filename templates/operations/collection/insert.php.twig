@@ -57,9 +57,9 @@ final class InsertOperation extends AbstractOperation
 {% set entityVar = '$' ~ entityClassName|lower %}
     /**
      * @param Request $request
-     * @return string
+     * @return string[]
      */
-    public function __invoke(Request $request): string
+    public function __invoke(Request $request): array
     {
         /** @var {{ entityClassName }} {{ entityVar }} */
         {{ entityVar }} = $this->deserializeBody($request, {{ entityClassName }}::class);
