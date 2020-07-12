@@ -20,7 +20,7 @@ final class JsonFormatter implements FormatterInterface
     {
         $response = new JsonResponse($content, $statusCode);
 
-        if (true === in_array($statusCode, range(400, 500))) {
+        if (true === in_array($statusCode, range(400, 599))) {
             $response->headers->set('Content-Type', 'application/problem+json');
         }
 

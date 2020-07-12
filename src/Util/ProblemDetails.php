@@ -29,7 +29,7 @@ final class ProblemDetails
         $self->type = 'https://tools.ietf.org/html/rfc2616#section-10';
         $self->title = 'An error occurred';
         $self->status = $throwable instanceof HttpException ? $throwable->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
-        $self->detail = $throwable instanceof HttpException ? $throwable->getMessage() : 'Internal server error';
+        $self->detail = $throwable instanceof HttpException ? $throwable->getMessage() : 'Internal server error.';
 
         return $self;
     }
