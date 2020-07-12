@@ -58,7 +58,7 @@ class SerializerAdapter
      * Setups serializer
      *
      * @param string|null $definition Serializer definition name
-     * @return mixed
+     * @return self
      */
     public function setup(string $definition = null): self
     {

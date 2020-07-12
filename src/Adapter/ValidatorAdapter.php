@@ -55,7 +55,7 @@ class ValidatorAdapter
      * Setups validator
      *
      * @param string $constraint Constraint name to validate against
-     * @return mixed
+     * @return self
      */
     public function setup(string $constraint): self
     {
