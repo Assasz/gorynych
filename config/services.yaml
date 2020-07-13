@@ -35,3 +35,5 @@ services:
   Gorynych\Adapter\ValidatorAdapter:
     arguments:
       $configLocator: '@kernel.config_locator'
+
+  Gorynych\Adapter\EntityManagerAdapterInterface: ~
