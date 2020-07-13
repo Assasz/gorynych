@@ -24,7 +24,7 @@ services:
   kernel.config_locator:
     synthetic: true
 
-  Gorynych\Resource\ResourceConfigBuilder:
+  Gorynych\Resource\ResourceRegistryBuilder:
     arguments:
       $configLocator: '@kernel.config_locator'
 

@@ -12,13 +12,13 @@ use Cake\Collection\Collection;
 use Gorynych\Adapter\TwigAdapter;
 use Gorynych\Resource\AbstractResource;
 use Gorynych\Resource\CollectionResourceInterface;
-use Gorynych\Resource\ResourceConfigBuilder;
+use Gorynych\Resource\ResourceRegistryBuilder;
 use Gorynych\Resource\ResourceInterface;
 
 final class ApiGenerator
 {
     private TwigAdapter $templateEngine;
-    private ResourceConfigBuilder $resourcesConfigBuilder;
+    private ResourceRegistryBuilder $resourcesConfigBuilder;
     private FileWriter $fileWriter;
 
     /** @var \ReflectionClass<AbstractResource>|null */
@@ -27,7 +27,7 @@ final class ApiGenerator
 
     public function __construct(
         TwigAdapter $templateEngine,
-        ResourceConfigBuilder $resourcesConfigBuilder,
+        ResourceRegistryBuilder $resourcesConfigBuilder,
         FileWriter $fileWriter
     ) {
         $this->templateEngine = $templateEngine;

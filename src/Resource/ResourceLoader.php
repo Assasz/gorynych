@@ -14,7 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 final class ResourceLoader
 {
     /** @var string[][] */
-    private array $resourceMap;
+    private array $resourceRegistry;
     private ContainerInterface $container;
 
     /**
@@ -24,7 +24,7 @@ final class ResourceLoader
     public function __construct(ContainerInterface $container, FileLocatorInterface $fileLocator)
     {
         $this->container = $container;
-        $this->resourceMap = $this->parseResourceMap($fileLocator->locate('resources.yaml'));
+        $this->resourceRegistry = $this->parseResourceRegistry($fileLocator->locate('resources.yaml'));
     }
 
     /**
@@ -32,7 +32,7 @@ final class ResourceLoader
      */
     public function getResources(): array
     {
-        return array_keys($this->resourceMap);
+        return array_keys($this->resourceRegistry);
     }
 
     /**
@@ -44,14 +44,14 @@ final class ResourceLoader
      */
     public function loadResource(string $resourceClass): AbstractResource
     {
-        if (false === array_key_exists($resourceClass, $this->resourceMap)) {
+        if (false === array_key_exists($resourceClass, $this->resourceRegistry)) {
             throw new \RuntimeException("Non existent resource {$resourceClass}.");
         }
 
         /** @var AbstractResource $resource */
         $resource = $this->container->get($resourceClass);
 
-        foreach ($this->resourceMap[$resourceClass] as $operationClass) {
+        foreach ($this->resourceRegistry[$resourceClass] as $operationClass) {
             /** @var ResourceOperationInterface $operation */
             $operation = $this->container->get($operationClass);
             $resource->addOperation($operation);
@@ -64,7 +64,7 @@ final class ResourceLoader
      * @param string $file
      * @return string[][]
      */
-    private function parseResourceMap(string $file): array
+    private function parseResourceRegistry(string $file): array
     {
         return Yaml::parseFile($file)['resources'];
     }

@@ -11,11 +11,11 @@ namespace Gorynych\Resource;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Yaml\Yaml;
 
-final class ResourceConfigBuilder
+final class ResourceRegistryBuilder
 {
     private FileLocatorInterface $configLocator;
     /** @var string[][][] */
-    private array $configuration;
+    private array $registry;
     private ?string $selectedResource;
 
     public function __construct(FileLocatorInterface $configLocator)
@@ -25,13 +25,13 @@ final class ResourceConfigBuilder
     }
 
     /**
-     * Loads resources configuration
+     * Loads resources registry
      *
      * @return $this
      */
     public function load(): self
     {
-        $this->configuration = Yaml::parse(file_get_contents($this->configLocator->locate('resources.yaml')));
+        $this->registry = Yaml::parse(file_get_contents($this->configLocator->locate('resources.yaml')));
 
         return $this;
     }
@@ -44,7 +44,7 @@ final class ResourceConfigBuilder
      */
     public function hasResource(string $resource): bool
     {
-        return true === array_key_exists($resource, $this->configuration['resources']);
+        return true === array_key_exists($resource, $this->registry['resources']);
     }
 
     /**
@@ -72,7 +72,7 @@ final class ResourceConfigBuilder
      */
     public function appendResource(string $resource): self
     {
-        $this->configuration['resources'][$resource] = [];
+        $this->registry['resources'][$resource] = [];
 
         return $this;
     }
@@ -90,8 +90,8 @@ final class ResourceConfigBuilder
             throw new \BadMethodCallException('There is no selected resource to merge operations into. See selectResource().');
         }
 
-        $this->configuration['resources'][$this->selectedResource] = array_values(array_unique(array_merge(
-            $this->configuration['resources'][$this->selectedResource],
+        $this->registry['resources'][$this->selectedResource] = array_values(array_unique(array_merge(
+            $this->registry['resources'][$this->selectedResource],
             $operations,
         )));
 
@@ -99,7 +99,7 @@ final class ResourceConfigBuilder
     }
 
     /**
-     * Saves configuration
+     * Saves registry
      *
      * @return $this
      */
@@ -107,7 +107,7 @@ final class ResourceConfigBuilder
     {
         file_put_contents(
             $this->configLocator->locate('resources.yaml'),
-            Yaml::dump($this->configuration, 3, 2)
+            Yaml::dump($this->registry, 3, 2)
         );
 
         return $this;
