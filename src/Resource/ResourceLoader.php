@@ -13,9 +13,9 @@ use Symfony\Component\Yaml\Yaml;
 
 final class ResourceLoader
 {
+    private ContainerInterface $container;
     /** @var string[][] */
     private array $resourceRegistry;
-    private ContainerInterface $container;
 
     /**
      * @param ContainerInterface $container
