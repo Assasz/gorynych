@@ -11,6 +11,11 @@ namespace Gorynych\Http\Formatter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * JSON response formatter according to JSON:API Latest Specification (v1.0)
+ *
+ * @see https://jsonapi.org/format/#document-top-level
+ */
 final class JsonFormatter implements FormatterInterface
 {
     /**
@@ -18,10 +23,13 @@ final class JsonFormatter implements FormatterInterface
      */
     public function format($content, int $statusCode): Response
     {
-        $response = new JsonResponse($content, $statusCode);
+        $response = new JsonResponse(null, $statusCode);
 
         if (true === in_array($statusCode, range(400, 599))) {
             $response->headers->set('Content-Type', 'application/problem+json');
+            $response->setData(['errors' => [$content]]);
+        } else {
+            $response->setData(['data' => $content]);
         }
 
         return $response;
