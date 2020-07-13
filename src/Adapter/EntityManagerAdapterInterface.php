@@ -11,12 +11,12 @@ namespace Gorynych\Adapter;
 interface EntityManagerAdapterInterface
 {
     /**
-     * Creates persistence context schema
+     * Creates persistence storage schema
      */
     public function createSchema(): void;
 
     /**
-     * Drops persistence context schema
+     * Drops persistence storage schema
      */
     public function dropSchema(): void;
 
