@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @see https://jsonapi.org/format/#document-top-level
  */
-final class JsonFormatter implements FormatterInterface
+class JsonFormatter implements FormatterInterface
 {
     /**
      * {@inheritdoc}
