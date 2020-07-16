@@ -36,4 +36,5 @@ services:
     arguments:
       $configLocator: '@kernel.config_locator'
 
-  Gorynych\Adapter\EntityManagerAdapterInterface: ~
+  Gorynych\Adapter\FixturesLoaderInterface: ~
+  Gorynych\Adapter\TestEntityManagerInterface: ~
