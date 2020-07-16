@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Testing;
 
-use Gorynych\Adapter\TestEntityManagerInterface;
+use Gorynych\Adapter\EntityManagerAdapterInterface;
 use Gorynych\Http\Kernel;
 use Gorynych\Http\KernelClient;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ abstract class ApiTestCase extends TestCase
 
     protected ?ContainerInterface $container;
     protected ?KernelClient $client;
-    protected ?TestEntityManagerInterface $entityManager;
+    protected ?EntityManagerAdapterInterface $entityManager;
 
     public function setUp(): void
     {
@@ -30,8 +30,8 @@ abstract class ApiTestCase extends TestCase
         $this->container = $kernel->getContainer();
         $this->client = new KernelClient($kernel);
 
-        /** @var TestEntityManagerInterface $entityManager */
-        $entityManager = $this->container->get('test_entity_manager.adapter');
+        /** @var EntityManagerAdapterInterface $entityManager */
+        $entityManager = $this->container->get('entity_manager.adapter');
         $this->entityManager = $entityManager;
 
         $this->recreateDatabaseSchema();

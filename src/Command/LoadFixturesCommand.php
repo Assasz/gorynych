@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Command;
 
-use Gorynych\Adapter\FixturesLoaderInterface;
+use Gorynych\Adapter\EntityManagerAdapterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,13 +19,13 @@ final class LoadFixturesCommand extends Command
 {
     protected static $defaultName = 'gorynych:load-fixtures';
 
-    private FixturesLoaderInterface $fixturesLoader;
+    private EntityManagerAdapterInterface $entityManager;
 
-    public function __construct(FixturesLoaderInterface $fixturesLoader)
+    public function __construct(EntityManagerAdapterInterface $managerAdapter)
     {
         parent::__construct();
 
-        $this->fixturesLoader = $fixturesLoader;
+        $this->entityManager = $managerAdapter;
     }
 
     protected function configure(): void
@@ -47,7 +47,7 @@ final class LoadFixturesCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->confirm("Using {$env} envirenment. Continue?", true);
 
-        $loadedFixtures = $this->fixturesLoader->loadFixtures(["_{$env}.yaml"]);
+        $loadedFixtures = $this->entityManager->loadFixtures(["_{$env}.yaml"]);
         $io->success("Fixtures loaded: {$loadedFixtures}");
 
         return 0;

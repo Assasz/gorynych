@@ -8,11 +8,11 @@ declare(strict_types=1);
 
 namespace Gorynych\Testing;
 
-use Gorynych\Adapter\TestEntityManagerInterface;
+use Gorynych\Adapter\EntityManagerAdapterInterface;
 
 trait DatabaseRefreshableTrait
 {
-    protected ?TestEntityManagerInterface $entityManager;
+    protected ?EntityManagerAdapterInterface $entityManager;
 
     protected function recreateDatabaseSchema(): void
     {
