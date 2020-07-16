@@ -30,7 +30,7 @@ final class KernelClient
      *
      * @param string $method
      * @param string $uri
-     * @param string[] $options
+     * @param string[][] $options
      * @return Response
      */
     public function request(string $method, string $uri, array $options = []): Response
@@ -41,7 +41,7 @@ final class KernelClient
     /**
      * @param string $method
      * @param string $uri
-     * @param string[] $options
+     * @param string[][] $options
      * @return Request
      * @throws \RuntimeException
      */
@@ -63,7 +63,7 @@ final class KernelClient
     }
 
     /**
-     * @param string[] $options
+     * @param string[][] $options
      * @return string|null
      */
     private function buildRequestBody(array $options): ?string
