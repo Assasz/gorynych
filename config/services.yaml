@@ -14,6 +14,7 @@ services:
     exclude:
       - '../src/{Http,Testing}'
       - '../src/Resource/ResourceLoader'
+      - '../src/Util/CommandLoader'
 
   Gorynych\Command\:
     resource: '../src/Command'
