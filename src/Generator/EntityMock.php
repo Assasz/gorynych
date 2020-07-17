@@ -33,7 +33,7 @@ final class EntityMock
 
     /**
      * @param \ReflectionProperty $property
-     * @return bool|int|mixed|string
+     * @return bool|int|mixed|string|null
      */
     private static function resolvePropertyValue(\ReflectionProperty $property)
     {
@@ -54,7 +54,7 @@ final class EntityMock
                 }
                 break;
             default:
-                $value = $faker->word;
+                $value = null;
         }
 
         return $value;
