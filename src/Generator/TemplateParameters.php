@@ -33,10 +33,19 @@ final class TemplateParameters
         $self->rootNamespace = $rootNamespace;
         $self->resourceNamespace = $resourceReflection->getName();
         $self->resourceClassName = $resourceReflection->getShortName();
-        $self->entityNamespace = "{$rootNamespace}\Domain\Entity\\{$entityClassName}";
+        $self->entityNamespace = self::getEntityNamespace($rootNamespace, $entityClassName);
         $self->entityClassName = $entityClassName;
         $self->entityMock = EntityMock::create((new \ReflectionClass($self->entityNamespace)));
 
         return $self;
+    }
+
+    /**
+     * It's impossible to guess entity namespace from resource itself
+     * So let it be a convention for simplicity purpose
+     */
+    private static function getEntityNamespace(string $rootNamespace, string $entityClassName): string
+    {
+        return sprintf('%s\Domain\Entity\%s', ...func_get_args());
     }
 }
