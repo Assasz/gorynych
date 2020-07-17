@@ -10,26 +10,32 @@ namespace Gorynych\Generator;
 
 use Faker\Factory;
 
-final class EntityMockFactory
+final class EntityMock
 {
     /**
      * @param \ReflectionClass<object> $entityReflection
-     * @return string[]
+     * @return self
      */
-    public static function create(\ReflectionClass $entityReflection): array
+    public static function create(\ReflectionClass $entityReflection): self
     {
+        $self = new self();
+
         foreach ($entityReflection->getProperties() as $property) {
             if ('id' === $property->getName()) {
                 continue;
             }
 
-            $entityMock[$property->getName()] = self::resolvePropertyValue($property);
+            $self->{$property->getName()} = self::resolvePropertyValue($property);
         }
 
-        return $entityMock ?? [];
+        return $self;
     }
 
-    private static function resolvePropertyValue(\ReflectionProperty $property): string
+    /**
+     * @param \ReflectionProperty $property
+     * @return bool|int|mixed|string
+     */
+    private static function resolvePropertyValue(\ReflectionProperty $property)
     {
         $faker = Factory::create();
 

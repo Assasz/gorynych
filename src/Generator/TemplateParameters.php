@@ -17,8 +17,7 @@ final class TemplateParameters
     public string $resourceClassName;
     public string $entityNamespace;
     public string $entityClassName;
-    /** @var string[] */
-    public array $entityMock;
+    public EntityMock $entityMock;
 
     /**
      * @param \ReflectionClass<AbstractResource> $resourceReflection
@@ -36,7 +35,7 @@ final class TemplateParameters
         $self->resourceClassName = $resourceReflection->getShortName();
         $self->entityNamespace = "{$rootNamespace}\Domain\Entity\\{$entityClassName}";
         $self->entityClassName = $entityClassName;
-        $self->entityMock = EntityMockFactory::create((new \ReflectionClass($self->entityNamespace)));
+        $self->entityMock = EntityMock::create((new \ReflectionClass($self->entityNamespace)));
 
         return $self;
     }
