@@ -37,9 +37,11 @@ final class EntityMock
      */
     private static function resolvePropertyValue(\ReflectionProperty $property)
     {
+        /** @var \ReflectionNamedType $propertyType */
+        $propertyType = $property->getType();
         $faker = Factory::create();
 
-        switch ($property->getType()->getName()) {
+        switch ($propertyType->getName()) {
             case 'int':
                 $value = $faker->randomDigit;
                 break;
