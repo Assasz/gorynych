@@ -36,6 +36,13 @@ abstract class Kernel
         return $this;
     }
 
+    public function reboot(): self
+    {
+        $this->shutdown()->boot($this->env ?? 'dev');
+
+        return $this;
+    }
+
     public function shutdown(): self
     {
         $this->container = null;

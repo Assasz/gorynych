@@ -38,7 +38,7 @@ final class KernelClient
      */
     public function request(string $method, string $uri, array $options = []): Response
     {
-        return $this->response = $this->kernel->handleRequest($this->prepareRequest($method, $uri, $options));
+        return $this->response = $this->kernel->reboot()->handleRequest($this->prepareRequest($method, $uri, $options));
     }
 
     public function getResponse(): ?Response
