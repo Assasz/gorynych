@@ -12,15 +12,11 @@ use Faker\Factory;
 
 final class EntityMock
 {
-    /**
-     * @param \ReflectionClass<object> $entityReflection
-     * @return self
-     */
-    public static function create(\ReflectionClass $entityReflection): self
+    public static function create(string $entityNamespace): self
     {
         $self = new self();
 
-        foreach ($entityReflection->getProperties() as $property) {
+        foreach ((new \ReflectionClass($entityNamespace))->getProperties() as $property) {
             if ('id' === $property->getName()) {
                 continue;
             }
@@ -32,7 +28,6 @@ final class EntityMock
     }
 
     /**
-     * @param \ReflectionProperty $property
      * @return bool|int|mixed|string|null
      */
     private static function resolvePropertyValue(\ReflectionProperty $property)

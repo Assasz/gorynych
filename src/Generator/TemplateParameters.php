@@ -35,7 +35,7 @@ final class TemplateParameters
         $self->resourceClassName = $resourceReflection->getShortName();
         $self->entityNamespace = self::getEntityNamespace($rootNamespace, $entityClassName);
         $self->entityClassName = $entityClassName;
-        $self->entityMock = EntityMock::create((new \ReflectionClass($self->entityNamespace)));
+        $self->entityMock = EntityMock::create($self->entityNamespace);
 
         return $self;
     }

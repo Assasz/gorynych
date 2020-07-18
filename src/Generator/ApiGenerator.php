@@ -47,6 +47,7 @@ final class ApiGenerator
             $this->generateFromSingleSchema($schema);
         }
 
+        // TODO: generate fixtures
         $this->updateConfiguration();
         $this->updateDocumentation();
     }
