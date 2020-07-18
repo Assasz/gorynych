@@ -30,6 +30,10 @@ use Symfony\Component\HttpFoundation\Request;
  *             ),
  *         ),
  *     ),
+ *     @OA\Response(
+ *         response="404",
+ *         description="Resource not found.",
+ *     ),
  * )
  */
 final class GetOperation extends AbstractOperation

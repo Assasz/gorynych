@@ -24,6 +24,10 @@ use Symfony\Component\HttpFoundation\Response;
  *         response="204",
  *         description="The {{ entityClassName }} resource is removed.",
  *     ),
+ *     @OA\Response(
+ *         response="404",
+ *         description="Resource not found.",
+ *     ),
  * )
  */
 final class RemoveOperation extends AbstractOperation

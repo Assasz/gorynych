@@ -34,6 +34,14 @@ use Symfony\Component\HttpFoundation\Request;
  *             ),
  *         ),
  *     ),
+ *     @OA\Response(
+ *         response="400",
+ *         description="Bad request.",
+ *     ),
+ *     @OA\Response(
+ *         response="404",
+ *         description="Resource not found.",
+ *     ),
  * )
  */
 final class ReplaceOperation extends AbstractOperation
