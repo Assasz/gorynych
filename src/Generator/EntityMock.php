@@ -39,7 +39,7 @@ final class EntityMock
     {
         $faker = Factory::create();
 
-        switch ((string)$property->getType()) {
+        switch ($property->getType()->getName()) {
             case 'int':
                 $value = $faker->randomDigit;
                 break;

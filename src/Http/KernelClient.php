@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class KernelClient
 {
+    public const JSON_BODY = 'json';
+
     private const DEFAULT_REQUEST_HEADERS = [
         'HTTP_ACCEPT' => 'application/json',
         'CONTENT_TYPE' => 'application/json',
@@ -68,8 +70,8 @@ final class KernelClient
      */
     private function buildRequestBody(array $options): ?string
     {
-        if (true === array_key_exists('json', $options)) {
-            $body = json_encode($options['json']);
+        if (true === array_key_exists(self::JSON_BODY, $options)) {
+            $body = json_encode($options[self::JSON_BODY]);
         }
 
         return $body ?? null;

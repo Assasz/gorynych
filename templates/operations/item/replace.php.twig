@@ -27,7 +27,11 @@ use Symfony\Component\HttpFoundation\Request;
  *         response="200",
  *         description="Replaced {{ entityClassName }} resource IRI.",
  *         @OA\JsonContent(
- *             example={"@id":"/{{ entityClassName|lower ~ 's' }}/1"}
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 example={"@id":"/{{ entityClassName|lower ~ 's' }}/1"},
+ *             ),
  *         ),
  *     ),
  * )
@@ -70,6 +74,6 @@ final class ReplaceOperation extends AbstractOperation
         $this->validate({{ newEntityVar }}, '{{ entityClassName }}');
         $this->resource->replace({{ newEntityVar }});
 
-        return ['@id' => $this->getPath()];
+        return $this->iriRepresentation();
     }
 }

@@ -10,9 +10,12 @@ namespace Gorynych\Operation;
 
 use Gorynych\Adapter\SerializerAdapter;
 use Gorynych\Adapter\ValidatorAdapter;
+use Gorynych\Resource\AbstractResource;
+use Gorynych\Resource\CollectionResourceInterface;
 use Gorynych\Resource\Exception\InvalidEntityException;
 use Gorynych\Http\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
+use Webmozart\Assert\Assert;
 
 trait ControllerTrait
 {
@@ -79,5 +82,22 @@ trait ControllerTrait
         } catch (InvalidEntityException $e) {
             throw new BadRequestHttpException($e->getErrors());
         }
+    }
+
+    /**
+     * Returns IRI representation of the resource
+     *
+     * @param object|null $entity if collection resource
+     * @return string[]
+     */
+    protected function iriRepresentation(object $entity = null): array
+    {
+        Assert::isInstanceOf($this->resource, AbstractResource::class);
+
+        return [
+            '@id' => $this->resource instanceof CollectionResourceInterface ?
+                $this->resource->getPath() . $entity->getId() :
+                $this->resource->getPath()
+        ];
     }
 }

@@ -26,6 +26,16 @@ trait ApiAssertionsTrait
     }
 
     /**
+     * @return mixed[]
+     */
+    protected static function normalizeResponse(Response $response): array
+    {
+        $data = json_decode($response->getContent(), true);
+
+        return $data['data'] ?? $data;
+    }
+
+    /**
      * @param mixed[] $data
      */
     private static function matchesJsonSchema($data, string $schemaClassName, ?int $checkMode, string $message = ''): void
@@ -33,15 +43,5 @@ trait ApiAssertionsTrait
         $constraint = new MatchesJsonSchema($schemaClassName, $checkMode);
 
         static::assertThat($data, $constraint, $message);
-    }
-
-    /**
-     * @return mixed[]
-     */
-    private static function normalizeResponse(Response $response): array
-    {
-        $data = json_decode($response->getContent(), true);
-
-        return $data['data'] ?? $data;
     }
 }
