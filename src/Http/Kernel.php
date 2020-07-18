@@ -26,11 +26,6 @@ abstract class Kernel
     protected string $env;
     protected bool $booted = false;
 
-    /**
-     * @param string $env
-     * @return Kernel
-     * @throws \Exception
-     */
     public function boot(string $env = 'dev'): self
     {
         $this->env = $env;
@@ -41,9 +36,6 @@ abstract class Kernel
         return $this;
     }
 
-    /**
-     * @return Kernel
-     */
     public function shutdown(): self
     {
         $this->container = null;
@@ -53,7 +45,6 @@ abstract class Kernel
     }
 
     /**
-     * @return ContainerBuilder
      * @throws \RuntimeException if kernel is not booted
      */
     public function getContainer(): ContainerBuilder
@@ -66,8 +57,6 @@ abstract class Kernel
     }
 
     /**
-     * @param Request $request
-     * @return Response
      * @throws \RuntimeException if kernel is not booted
      * @throws \Throwable
      */
@@ -90,7 +79,7 @@ abstract class Kernel
             $operation = $router->findOperation($request);
             $output = $operation($request);
         } catch (\Throwable $t) {
-            if ('prod' !== $this->env) {
+            if ('dev' === $this->env || ('test' === $this->env && !($t instanceof HttpException))) {
                 throw $t;
             }
 
@@ -105,8 +94,6 @@ abstract class Kernel
 
     /**
      * Returns FileLocator for project config directory
-     *
-     * @return FileLocatorInterface
      */
     abstract public function getConfigLocator(): FileLocatorInterface;
 
@@ -116,7 +103,7 @@ abstract class Kernel
     abstract protected function loadConfiguration(): void;
 
     /**
-     * Initializes DI container
+     * Initializes Dependency Injection container
      */
     private function initializeContainer(): void
     {
