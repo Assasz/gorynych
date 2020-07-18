@@ -12,16 +12,16 @@ use Gorynych\Adapter\EntityManagerAdapterInterface;
 
 trait DatabaseRefreshableTrait
 {
-    protected ?EntityManagerAdapterInterface $entityManager;
+    protected static ?EntityManagerAdapterInterface $entityManager;
 
-    protected function recreateDatabaseSchema(): void
+    protected static function recreateDatabaseSchema(): void
     {
-        $this->dropDatabaseSchema();
-        $this->entityManager->createSchema();
+        static::dropDatabaseSchema();
+        static::$entityManager->createSchema();
     }
 
-    protected function dropDatabaseSchema(): void
+    protected static function dropDatabaseSchema(): void
     {
-        $this->entityManager->dropSchema();
+        static::$entityManager->dropSchema();
     }
 }

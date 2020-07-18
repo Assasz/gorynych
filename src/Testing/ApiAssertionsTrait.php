@@ -13,19 +13,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait ApiAssertionsTrait
 {
-    public static function assertMatchesItemJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
+    protected static function assertMatchesItemJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
     {
-        $data = json_decode($response->getContent(), true);
-
-        self::matchesJsonSchema($data, $schemaClassName, $checkMode, $message);
+        self::matchesJsonSchema(self::normalizeResponse($response), $schemaClassName, $checkMode, $message);
     }
 
-    public static function assertMatchesCollectionJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
+    protected static function assertMatchesCollectionJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
     {
-        $data = json_decode($response->getContent(), true);
-        $data = (0 === count($data)) ? $data : $data[0];
+        $data = self::normalizeResponse($response);
 
-        self::matchesJsonSchema($data, $schemaClassName, $checkMode, $message);
+        self::matchesJsonSchema($data[0] ?? $data, $schemaClassName, $checkMode, $message);
     }
 
     /**
@@ -36,5 +33,15 @@ trait ApiAssertionsTrait
         $constraint = new MatchesJsonSchema($schemaClassName, $checkMode);
 
         static::assertThat($data, $constraint, $message);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    private static function normalizeResponse(Response $response): array
+    {
+        $data = json_decode($response->getContent(), true);
+
+        return $data['data'] ?? $data;
     }
 }

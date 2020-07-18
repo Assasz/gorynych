@@ -19,29 +19,29 @@ abstract class ApiTestCase extends TestCase
     use ApiAssertionsTrait;
     use DatabaseRefreshableTrait;
 
-    protected ?ContainerInterface $container;
-    protected ?KernelClient $client;
-    protected ?EntityManagerAdapterInterface $entityManager;
+    protected static ?ContainerInterface $container;
+    protected static ?KernelClient $client;
+    protected static ?EntityManagerAdapterInterface $entityManager;
 
     public function setUp(): void
     {
         $kernel = static::createKernel()->boot($_ENV['APP_ENV'] ?? 'test');
 
-        $this->container = $kernel->getContainer();
-        $this->client = new KernelClient($kernel);
+        static::$container = $kernel->getContainer();
+        static::$client = new KernelClient($kernel);
 
         /** @var EntityManagerAdapterInterface $entityManager */
-        $entityManager = $this->container->get('entity_manager.adapter');
-        $this->entityManager = $entityManager;
+        $entityManager = static::$container->get('entity_manager.adapter');
+        static::$entityManager = $entityManager;
 
-        $this->recreateDatabaseSchema();
+        static::recreateDatabaseSchema();
     }
 
     public function tearDown(): void
     {
-        $this->dropDatabaseSchema();
+        static::dropDatabaseSchema();
 
-        $this->container = $this->client = $this->entityManager = null;
+        static::$container = static::$client = static::$entityManager = null;
     }
 
     /**
