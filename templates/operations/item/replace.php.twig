@@ -73,11 +73,8 @@ final class ReplaceOperation extends AbstractOperation
      */
     public function __invoke(Request $request): array
     {
-        {{ entityVar }} = $this->resource->retrieve();
-
         /** @var {{ entityClassName }} {{ newEntityVar }} */
         {{ newEntityVar }} = $this->deserializeBody($request, {{ entityClassName }}::class);
-        {{ newEntityVar }}->setId({{ entityVar }}->getId());
 
         $this->validate({{ newEntityVar }}, '{{ entityClassName }}');
         $this->resource->replace({{ newEntityVar }});
