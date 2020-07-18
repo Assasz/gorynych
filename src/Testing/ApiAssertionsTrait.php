@@ -13,26 +13,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait ApiAssertionsTrait
 {
-    protected static function assertMatchesItemJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
+    protected static function assertStatusCodeSame(int $statusCode, string $message = ''): void
     {
-        self::matchesJsonSchema(self::normalizeResponse($response), $schemaClassName, $checkMode, $message);
+        static::assertSame($statusCode, static::$client->getResponse()->getStatusCode(), $message);
     }
 
-    protected static function assertMatchesCollectionJsonSchema(Response $response, string $schemaClassName, ?int $checkMode = null, string $message = ''): void
+    protected static function assertMatchesItemJsonSchema(string $schemaClassName, ?int $checkMode = null, string $message = ''): void
     {
-        $data = self::normalizeResponse($response);
+        self::matchesJsonSchema(static::normalizeResponse(), $schemaClassName, $checkMode, $message);
+    }
+
+    protected static function assertMatchesCollectionJsonSchema(string $schemaClassName, ?int $checkMode = null, string $message = ''): void
+    {
+        $data = static::normalizeResponse();
 
         self::matchesJsonSchema($data[0] ?? $data, $schemaClassName, $checkMode, $message);
-    }
-
-    /**
-     * @return mixed[]
-     */
-    protected static function normalizeResponse(Response $response): array
-    {
-        $data = json_decode($response->getContent(), true);
-
-        return $data['data'] ?? $data;
     }
 
     /**

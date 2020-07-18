@@ -60,4 +60,19 @@ abstract class ApiTestCase extends TestCase
 
         return new $_ENV['KERNEL_CLASS']();
     }
+
+    /**
+     * @return mixed[]
+     * @throws \BadMethodCallException
+     */
+    protected static function normalizeResponse(): array
+    {
+        if (null === $response = static::$client->getResponse()) {
+            throw new \BadMethodCallException('Cannot normalize empty response.');
+        }
+
+        $data = json_decode($response->getContent(), true);
+
+        return $data['data'] ?? $data;
+    }
 }
