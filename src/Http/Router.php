@@ -44,9 +44,7 @@ final class Router
                 $operation = $this->filterOperationsByMethod($this->filterOperationsByUri($resource));
 
                 $this->matchUri($resource->getPath(), $operation->getPath(), $matches);
-
                 $resource->id = $matches['id'] ?? null;
-                $operation->setResource($resource);
 
                 break;
             } catch (NotFoundHttpException $e) {
@@ -121,8 +119,9 @@ final class Router
     {
         $resourcePath = self::normalizeUri($resourcePath);
         $operationPath = self::normalizeUri($operationPath);
+        $uri = self::normalizeUri($this->request->getPathInfo());
 
-        return (bool) preg_match("#^{$resourcePath}{$operationPath}$#", self::normalizeUri($this->request->getPathInfo()), $matches);
+        return (bool) preg_match("#^{$resourcePath}{$operationPath}$#", $uri, $matches);
     }
 
     /**

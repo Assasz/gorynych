@@ -12,10 +12,10 @@ use Gorynych\Operation\ResourceOperationInterface;
 
 abstract class AbstractResource
 {
-    protected const NUMERIC_ID = '(?P<id>[0-9]+)';
+    protected const NUMERIC_ID = '(?P<id>[\d]+)';
+    protected const ALNUM_ID = '(?P<id>[\w]+)';
 
-    /** @var mixed */
-    public $id;
+    public ?string $id;
 
     /** @var ResourceOperationInterface[] */
     protected array $operations = [];
@@ -36,6 +36,7 @@ abstract class AbstractResource
      */
     public function addOperation(ResourceOperationInterface $operation): void
     {
+        $operation->setResource($this);
         $this->operations[] = $operation;
     }
 
