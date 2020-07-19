@@ -10,32 +10,36 @@ namespace Gorynych\Generator;
 
 use Cake\Collection\Collection;
 use Gorynych\Adapter\TwigAdapter;
-use Gorynych\Exception\MissingEnvVariableException;
 use Gorynych\Resource\AbstractResource;
 use Gorynych\Resource\CollectionResourceInterface;
 use Gorynych\Resource\ResourceRegistryBuilder;
 use Gorynych\Resource\ResourceInterface;
 use Gorynych\Util\EnvAccess;
+use Gorynych\Util\FixturesFactory;
 use Gorynych\Util\OpenApiScanner;
+use Symfony\Component\Yaml\Yaml;
 
 final class ApiGenerator
 {
     private TwigAdapter $templateEngine;
     private ResourceRegistryBuilder $resourcesConfigBuilder;
     private FileWriter $fileWriter;
+    private FixturesFactory $fixturesFactory;
 
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
-    private ?TemplateParameters $templateParameters;
+    private ?TemplateDto $templateDto;
 
     public function __construct(
         TwigAdapter $templateEngine,
         ResourceRegistryBuilder $resourcesConfigBuilder,
-        FileWriter $fileWriter
+        FileWriter $fileWriter,
+        FixturesFactory $fixturesFactory
     ) {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
         $this->fileWriter = $fileWriter;
+        $this->fixturesFactory = $fixturesFactory;
     }
 
     /**
@@ -44,15 +48,13 @@ final class ApiGenerator
     public function generate(\ReflectionClass $resourceReflection): void
     {
         $this->resourceReflection = $resourceReflection;
-        $this->templateParameters = TemplateParameters::fromReflection($this->resourceReflection);
+        $this->templateDto = TemplateDto::fromReflection($this->resourceReflection);
 
         foreach ($this->resolveTemplateSchema() as $schema) {
             $this->generateFromSingleSchema($schema);
         }
 
-        // TODO: generate fixtures
-        $this->updateConfiguration();
-        $this->updateDocumentation();
+        $this->generateFixtures()->updateConfiguration()->updateDocumentation();
     }
 
     /**
@@ -64,19 +66,36 @@ final class ApiGenerator
     private function generateFromSingleSchema(array $schema): void
     {
         foreach ($schema as $itemName => $item) {
-            $path = sprintf(EnvAccess::get('PROJECT_DIR') . $item['output'], $this->templateParameters->entityClassName);
-            $content = $this->templateEngine->render($item['template'], (array)$this->templateParameters);
+            $path = sprintf(EnvAccess::get('PROJECT_DIR') . $item['output'], $this->templateDto->entityClassName);
+            $content = $this->templateEngine->render($item['template'], (array)$this->templateDto);
 
             $this->fileWriter->write($path, $content);
         }
     }
 
     /**
-     * Updates resources.yaml configuration file
+     * Generates test fixtures
+     *
+     * @return self
      */
-    private function updateConfiguration(): void
+    private function generateFixtures(): self
     {
-        $templateParameters = $this->templateParameters;
+        $path = EnvAccess::get('PROJECT_DIR') . "/config/fixtures/{$this->templateDto->resourceSimpleName}.yaml";
+        $fixtures = $this->fixturesFactory->create($this->templateDto->entityNamespace);
+
+        $this->fileWriter->write($path, Yaml::dump($fixtures, 3, 2));
+
+        return $this;
+    }
+
+    /**
+     * Updates resources.yaml configuration file
+     *
+     * @return self
+     */
+    private function updateConfiguration(): self
+    {
+        $templateParameters = $this->templateDto;
 
         $newConfigRecords = (new Collection($this->resolveTemplateSchema()))
             ->map(static function (array $operationSchema) use ($templateParameters): string {
@@ -93,16 +112,23 @@ final class ApiGenerator
             ->selectResource($this->resourceReflection->getName())
             ->mergeOperations(...$newConfigRecords)
             ->save();
+
+        return $this;
     }
 
     /**
      * Updates openapi.yaml documentation file
+     *
+     * @return self
      */
-    private function updateDocumentation(): void
+    private function updateDocumentation(): self
     {
-        $this->fileWriter
-            ->forceOverwrite()
-            ->write(EnvAccess::get('PROJECT_DIR') . '/openapi/openapi.yaml', OpenApiScanner::scan()->toYaml());
+        $this->fileWriter->forceOverwrite()->write(
+            EnvAccess::get('PROJECT_DIR') . '/openapi/openapi.yaml',
+            OpenApiScanner::scan()->toYaml()
+        );
+
+        return $this;
     }
 
     /**

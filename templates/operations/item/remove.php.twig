@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @OA\Delete(
- *     path="/{{ entityClassName|lower ~ 's' }}/{id}",
+ *     path="/{{ resourceSimpleName }}/{id}",
  *     summary="Removes given {{ entityClassName }} resource.",
  *     tags={"{{ entityClassName }}"},
  *     @OA\Parameter(

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @OA\Put(
- *     path="/{{ entityClassName|lower ~ 's' }}/{id}",
+ *     path="/{{ resourceSimpleName }}/{id}",
  *     summary="Replaces given {{ entityClassName }} resource with new one.",
  *     tags={"{{ entityClassName }}"},
  *     @OA\Parameter(
@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
  *             @OA\Property(
  *                 property="data",
  *                 type="object",
- *                 example={"@id":"/{{ entityClassName|lower ~ 's' }}/1"},
+ *                 example={"@id":"/{{ resourceSimpleName }}/1"},
  *             ),
  *         ),
  *     ),

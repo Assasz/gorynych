@@ -11,13 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GetTest extends ApiTestCase
 {
-    private const ENDPOINT_URI = '/{{ entityClassName|lower ~ 's' }}/1';
+    private const ENDPOINT_URI = '/{{ resourceSimpleName }}/1';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        static::$entityManager->loadFixtures(['{{ entityClassName|lower ~ 's' }}.yaml']);
+        static::$entityManager->loadFixtures(['{{ resourceSimpleName }}.yaml']);
     }
 
     public function testStructure(): void

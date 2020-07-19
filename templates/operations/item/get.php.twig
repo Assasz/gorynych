@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @OA\Get(
- *     path="/{{ entityClassName|lower ~ 's' }}/{id}",
+ *     path="/{{ resourceSimpleName }}/{id}",
  *     summary="Retrieves given {{ entityClassName }} resource.",
  *     tags={"{{ entityClassName }}"},
  *     @OA\Parameter(

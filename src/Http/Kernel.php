@@ -9,11 +9,11 @@ declare(strict_types=1);
 namespace Gorynych\Http;
 
 use Gorynych\Exception\KernelNotBootedException;
+use Gorynych\Http\Dto\ProblemDetails;
 use Gorynych\Http\Exception\HttpException;
 use Gorynych\Http\Exception\NotAcceptableHttpException;
 use Gorynych\Http\Formatter\FormatterFactory;
 use Gorynych\Resource\ResourceLoader;
-use Gorynych\Util\ProblemDetails;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

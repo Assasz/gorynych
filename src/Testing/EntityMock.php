@@ -37,18 +37,21 @@ final class EntityMock
         $faker = Factory::create();
 
         switch ($propertyType->getName()) {
-            case 'int':
-                $value = $faker->randomDigit;
-                break;
-            case 'bool':
-                $value = $faker->boolean;
-                break;
             case 'string':
                 try {
                     $value = $faker->{$property->getName()};
                 } catch (\Throwable $t) {
                     $value = $faker->word;
                 }
+                break;
+            case 'int':
+                $value = $faker->randomDigit;
+                break;
+            case 'bool':
+                $value = $faker->boolean;
+                break;
+            case 'DateTime':
+                $value = $faker->dateTime->format('Y-m-d H:i');
                 break;
             default:
                 $value = null;

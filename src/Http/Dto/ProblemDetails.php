@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\Util;
+namespace Gorynych\Http\Dto;
 
 use Gorynych\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;

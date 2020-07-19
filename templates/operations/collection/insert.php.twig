@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @OA\Post(
- *     path="/{{ entityClassName|lower ~ 's' }}",
+ *     path="/{{ resourceSimpleName }}",
  *     summary="Inserts new {{ entityClassName }} item into collection resource.",
  *     tags={"{{ entityClassName }}"},
  *     @OA\RequestBody(
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  *             @OA\Property(
  *                 property="data",
  *                 type="object",
- *                 example={"@id":"/{{ entityClassName|lower ~ 's' }}/1"},
+ *                 example={"@id":"/{{ resourceSimpleName }}/1"},
  *             ),
  *         ),
  *     ),

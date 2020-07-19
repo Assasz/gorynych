@@ -9,12 +9,14 @@ declare(strict_types=1);
 namespace Gorynych\Generator;
 
 use Gorynych\Resource\AbstractResource;
+use Symfony\Component\String\Inflector\EnglishInflector;
 
-final class TemplateParameters
+final class TemplateDto
 {
     public string $rootNamespace;
     public string $resourceNamespace;
     public string $resourceClassName;
+    public string $resourceSimpleName;
     public string $entityNamespace;
     public string $entityClassName;
 
@@ -32,6 +34,7 @@ final class TemplateParameters
         $self->rootNamespace = $rootNamespace;
         $self->resourceNamespace = $resourceReflection->getName();
         $self->resourceClassName = $resourceReflection->getShortName();
+        $self->resourceSimpleName = strtolower(current((new EnglishInflector())->pluralize($entityClassName)));
         $self->entityNamespace = self::getEntityNamespace($rootNamespace, $entityClassName);
         $self->entityClassName = $entityClassName;
 
