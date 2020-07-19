@@ -12,11 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MethodNotAllowedHttpException extends HttpException
 {
-    /**
-     * @param string $message
-     * @param int $code
-     * @param \Throwable|null $previous
-     */
     public function __construct(string $message = 'Method not allowed.', int $code = 0, ?\Throwable $previous = null)
     {
         parent::__construct(Response::HTTP_METHOD_NOT_ALLOWED, $message, $code, $previous);

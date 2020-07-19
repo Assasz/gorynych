@@ -37,11 +37,6 @@ final class GenerateApiCommand extends Command
             ->addArgument('resourceNamespace', InputArgument::REQUIRED, 'Namespace of application resources');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $apiGenerator = $this->apiGenerator;

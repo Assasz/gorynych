@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Operation;
 
+use Gorynych\Resource\AbstractResource;
 use Symfony\Component\HttpFoundation\Request;
 
 interface ResourceOperationInterface
@@ -34,7 +35,7 @@ interface ResourceOperationInterface
     public function getResponseStatus(): int;
 
     /**
-     * @param mixed $resource
+     * @param mixed|AbstractResource $resource
      * @return mixed|void
      */
     public function setResource($resource);

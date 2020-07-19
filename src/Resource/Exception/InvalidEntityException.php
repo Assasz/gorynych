@@ -17,9 +17,6 @@ class InvalidEntityException extends \LogicException
 
     /**
      * @param string[] $errors
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
      */
     public function __construct(array $errors = [], $message = '', int $code = 0, Throwable $previous = null)
     {

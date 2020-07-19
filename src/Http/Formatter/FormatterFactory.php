@@ -17,9 +17,6 @@ final class FormatterFactory
     /** @var string[] */
     private array $formatters;
 
-    /**
-     * @param FileLocatorInterface $fileLocator
-     */
     public function __construct(FileLocatorInterface $fileLocator)
     {
         $this->formatters = $this->parseFormatters($fileLocator->locate('formatters.yaml'));
@@ -46,7 +43,6 @@ final class FormatterFactory
     }
 
     /**
-     * @param string $file
      * @return string[]
      */
     private function parseFormatters(string $file): array

@@ -32,14 +32,9 @@ final class LoadFixturesCommand extends Command
     {
         $this
             ->setDescription('Loads fixtures into database for specified environment (dev by default).')
-            ->addOption('env', null, InputArgument::OPTIONAL);
+            ->addOption('env', 'e', InputArgument::OPTIONAL);
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $env = $input->getOption('env') ?? 'dev';
@@ -47,8 +42,8 @@ final class LoadFixturesCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->confirm("Using {$env} envirenment. Continue?", true);
 
-        $loadedFixtures = $this->entityManager->loadFixtures(["_{$env}.yaml"]);
-        $io->success("Fixtures loaded: {$loadedFixtures}");
+        $fixturesLoaded = $this->entityManager->loadFixtures(["_{$env}.yaml"]);
+        $io->success("Fixtures loaded: {$fixturesLoaded}");
 
         return 0;
     }

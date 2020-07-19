@@ -12,11 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UnprocessableEntityHttpException extends HttpException
 {
-    /**
-     * @param string $message
-     * @param int $code
-     * @param \Throwable|null $previous
-     */
     public function __construct(string $message = 'Unprocessable entity.', int $code = 0, ?\Throwable $previous = null)
     {
         parent::__construct(Response::HTTP_UNPROCESSABLE_ENTITY, $message, $code, $previous);

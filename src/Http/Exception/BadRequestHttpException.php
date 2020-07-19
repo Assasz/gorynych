@@ -14,8 +14,6 @@ class BadRequestHttpException extends HttpException
 {
     /**
      * @param string|string[] $message
-     * @param int $code
-     * @param \Throwable|null $previous
      */
     public function __construct($message = 'Bad request.', int $code = 0, ?\Throwable $previous = null)
     {

@@ -17,10 +17,6 @@ final class ResourceLoader
     /** @var string[][] */
     private array $resourceRegistry;
 
-    /**
-     * @param ContainerInterface $container
-     * @param FileLocatorInterface $fileLocator
-     */
     public function __construct(ContainerInterface $container, FileLocatorInterface $fileLocator)
     {
         $this->container = $container;
@@ -61,7 +57,6 @@ final class ResourceLoader
     }
 
     /**
-     * @param string $file
      * @return string[][]
      */
     private function parseResourceRegistry(string $file): array
