@@ -14,6 +14,7 @@ use Gorynych\Resource\AbstractResource;
 use Gorynych\Resource\CollectionResourceInterface;
 use Gorynych\Resource\ResourceRegistryBuilder;
 use Gorynych\Resource\ResourceInterface;
+use Gorynych\Util\OpenApiScanner;
 
 final class ApiGenerator
 {
@@ -37,9 +38,14 @@ final class ApiGenerator
 
     /**
      * @param \ReflectionClass<AbstractResource> $resourceReflection
+     * @throws \RuntimeException
      */
     public function generate(\ReflectionClass $resourceReflection): void
     {
+        if (false === array_key_exists('PROJECT_DIR', $_ENV)) {
+            throw new \RuntimeException('Please make sure that PROJECT_DIR environmental variable is defined.');
+        }
+
         $this->resourceReflection = $resourceReflection;
         $this->templateParameters = TemplateParameters::fromReflection($this->resourceReflection);
 
@@ -97,14 +103,9 @@ final class ApiGenerator
      */
     private function updateDocumentation(): void
     {
-        $docs = \OpenApi\scan([
-            "{$_ENV['PROJECT_DIR']}/src",
-            "{$_ENV['PROJECT_DIR']}/config",
-        ]);
-
         $this->fileWriter
             ->forceOverwrite()
-            ->write("{$_ENV['PROJECT_DIR']}/openapi/openapi.yaml", $docs->toYaml());
+            ->write("{$_ENV['PROJECT_DIR']}/openapi/openapi.yaml", OpenApiScanner::scan()->toYaml());
     }
 
     /**
