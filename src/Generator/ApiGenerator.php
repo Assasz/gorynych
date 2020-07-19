@@ -61,11 +61,6 @@ final class ApiGenerator
     private function generateFromSingleSchema(array $schema): void
     {
         foreach ($schema as $itemName => $item) {
-            if ('test' === $itemName) {
-                // TODO: add tests templates first
-                continue;
-            }
-
             $path = sprintf($_ENV['PROJECT_DIR'] . $item['output'], $this->templateParameters->entityClassName);
             $content = $this->templateEngine->render($item['template'], (array)$this->templateParameters);
 
