@@ -25,6 +25,7 @@ final class ApiGenerator
     private ResourceRegistryBuilder $resourcesConfigBuilder;
     private FileWriter $fileWriter;
     private FixturesFactory $fixturesFactory;
+    private OpenApiScanner $docsScanner;
 
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
@@ -34,12 +35,14 @@ final class ApiGenerator
         TwigAdapter $templateEngine,
         ResourceRegistryBuilder $resourcesConfigBuilder,
         FileWriter $fileWriter,
-        FixturesFactory $fixturesFactory
+        FixturesFactory $fixturesFactory,
+        OpenApiScanner $docsScanner
     ) {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
         $this->fileWriter = $fileWriter;
         $this->fixturesFactory = $fixturesFactory;
+        $this->docsScanner = $docsScanner;
     }
 
     /**
@@ -125,7 +128,7 @@ final class ApiGenerator
     {
         $this->fileWriter->forceOverwrite()->write(
             EnvAccess::get('PROJECT_DIR') . '/openapi/openapi.yaml',
-            OpenApiScanner::scan()->toYaml()
+            $this->docsScanner->scan()->toYaml()
         );
 
         return $this;

@@ -14,8 +14,10 @@ final class OpenApiScanner
 {
     /**
      * Scans Open API annotations across project source and config directories
+     *
+     * @return OpenApi
      */
-    public static function scan(): OpenApi
+    public function scan(): OpenApi
     {
         return \OpenApi\scan([
             EnvAccess::get('PROJECT_DIR') . '/src',

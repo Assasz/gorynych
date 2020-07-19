@@ -22,12 +22,14 @@ final class UpdateApiDocsCommand extends Command
     protected static $defaultName = 'gorynych:update-api-docs';
 
     private FileWriter $fileWriter;
+    private OpenApiScanner $docsScanner;
 
-    public function __construct(FileWriter $fileWriter)
+    public function __construct(FileWriter $fileWriter, OpenApiScanner $docsScanner)
     {
         parent::__construct();
 
         $this->fileWriter = $fileWriter;
+        $this->docsScanner = $docsScanner;
     }
 
     protected function configure(): void
@@ -42,7 +44,7 @@ final class UpdateApiDocsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $path = EnvAccess::get('PROJECT_DIR') . ($input->getArgument('outputPath') ?? '/openapi/openapi.yaml');
 
-        $this->fileWriter->forceOverwrite()->write($path, OpenApiScanner::scan()->toYaml());
+        $this->fileWriter->forceOverwrite()->write($path, $this->docsScanner->scan()->toYaml());
 
         $io->success("Docs updated at path {$path}");
 
