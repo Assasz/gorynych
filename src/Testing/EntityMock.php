@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\Generator;
+namespace Gorynych\Testing;
 
 use Faker\Factory;
 
