@@ -12,6 +12,9 @@ use OpenApi\Annotations\OpenApi;
 
 final class OpenApiScanner
 {
+    /**
+     * Scans Open API annotations across project source and config directories
+     */
     public static function scan(): OpenApi
     {
         return \OpenApi\scan([
