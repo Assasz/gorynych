@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Gorynych\Command;
 
-use Gorynych\Exception\MissingEnvVariableException;
 use Gorynych\Generator\FileWriter;
 use Gorynych\Util\EnvAccess;
 use Gorynych\Util\OpenApiScanner;
