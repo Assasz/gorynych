@@ -37,8 +37,16 @@ final class GenerateApiCommand extends Command
             ->addArgument('resourceNamespace', InputArgument::REQUIRED, 'Namespace of application resources');
     }
 
+    /**
+     * @throws \RuntimeException
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (false === array_key_exists('PROJECT_DIR', $_ENV)) {
+            throw new \RuntimeException('Please make sure that PROJECT_DIR environmental variable is defined.');
+        }
+
         $apiGenerator = $this->apiGenerator;
         $resources = ClassFinder::getClassesInNamespace($input->getArgument('resourceNamespace'), ClassFinder::RECURSIVE_MODE);
 
