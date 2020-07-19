@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace Gorynych\Command;
 
+use Gorynych\Exception\MissingEnvVariableException;
 use Gorynych\Generator\FileWriter;
+use Gorynych\Util\EnvAccess;
 use Gorynych\Util\OpenApiScanner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,17 +38,10 @@ final class UpdateApiDocsCommand extends Command
             ->addArgument('outputPath', InputArgument::OPTIONAL, 'API documentation file output path');
     }
 
-    /**
-     * @throws \RuntimeException
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (false === array_key_exists('PROJECT_DIR', $_ENV)) {
-            throw new \RuntimeException('Please make sure that PROJECT_DIR environmental variable is defined.');
-        }
-
         $io = new SymfonyStyle($input, $output);
-        $path = $_ENV['PROJECT_DIR'] . ($input->getArgument('outputPath') ?? '/openapi/openapi.yaml');
+        $path = EnvAccess::get('PROJECT_DIR') . ($input->getArgument('outputPath') ?? '/openapi/openapi.yaml');
 
         $this->fileWriter->forceOverwrite()->write($path, OpenApiScanner::scan()->toYaml());
 

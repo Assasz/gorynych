@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Http;
 
+use Gorynych\Util\EnvAccess;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,16 +52,11 @@ final class KernelClient
      * @param string $uri
      * @param string[][] $options
      * @return Request
-     * @throws \RuntimeException
      */
     private function prepareRequest(string $method, string $uri, array $options = []): Request
     {
-        if (false === array_key_exists('BASE_URI', $_ENV)) {
-            throw new \RuntimeException('BASE_URI variable needs to be defined in your .env file.');
-        }
-
         return Request::create(
-            $_ENV['BASE_URI'] . $uri,
+            EnvAccess::get('BASE_URI') . $uri,
             $method,
             $options['parameters'] ?? [],
             $options['cookies'] ?? [],

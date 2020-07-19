@@ -22,7 +22,7 @@ final class Debug
      */
     public static function web(HandlerInterface $handler = null): void
     {
-        if ('prod' === ($_ENV['APP_ENV'] ?? 'dev')) {
+        if ('prod' === (EnvAccess::get('APP_ENV', 'dev'))) {
             error_reporting(0);
             ini_set('display_errors', '0');
 

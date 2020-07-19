@@ -6,6 +6,7 @@
 
 namespace Gorynych\Resource;
 
+use Gorynych\Exception\NotExistentResourceException;
 use Gorynych\Operation\ResourceOperationInterface;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,12 +37,12 @@ final class ResourceLoader
      *
      * @param string $resourceClass
      * @return AbstractResource
-     * @throws \RuntimeException
+     * @throws NotExistentResourceException
      */
     public function loadResource(string $resourceClass): AbstractResource
     {
         if (false === array_key_exists($resourceClass, $this->resourceRegistry)) {
-            throw new \RuntimeException("Non existent resource {$resourceClass}.");
+            throw new NotExistentResourceException($resourceClass);
         }
 
         /** @var AbstractResource $resource */

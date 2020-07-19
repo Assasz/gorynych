@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Http;
 
+use Gorynych\Exception\KernelNotBootedException;
 use Gorynych\Http\Exception\HttpException;
 use Gorynych\Http\Exception\NotAcceptableHttpException;
 use Gorynych\Http\Formatter\FormatterFactory;
@@ -52,25 +53,25 @@ abstract class Kernel
     }
 
     /**
-     * @throws \RuntimeException if kernel is not booted
+     * @throws KernelNotBootedException
      */
     public function getContainer(): ContainerBuilder
     {
         if (false === $this->booted) {
-            throw new \RuntimeException('Unable to obtain container when kernel is not booted. Please, boot kernel first.');
+            throw new KernelNotBootedException('Unable to obtain container when kernel is not booted. Please, boot kernel first.');
         }
 
         return $this->container;
     }
 
     /**
-     * @throws \RuntimeException if kernel is not booted
+     * @throws KernelNotBootedException
      * @throws \Throwable
      */
     public function handleRequest(Request $request): Response
     {
         if (false === $this->booted) {
-            throw new \RuntimeException('Unable to handle request when kernel is not booted. Please, boot kernel first.');
+            throw new KernelNotBootedException('Unable to handle request when kernel is not booted. Please, boot kernel first.');
         }
 
         $router = new Router(new ResourceLoader($this->getContainer(), $this->getConfigLocator()));

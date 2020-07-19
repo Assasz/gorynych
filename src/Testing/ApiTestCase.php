@@ -11,6 +11,7 @@ namespace Gorynych\Testing;
 use Gorynych\Adapter\EntityManagerAdapterInterface;
 use Gorynych\Http\Kernel;
 use Gorynych\Http\KernelClient;
+use Gorynych\Util\EnvAccess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,7 +26,7 @@ abstract class ApiTestCase extends TestCase
 
     public function setUp(): void
     {
-        $kernel = static::createKernel()->boot($_ENV['APP_ENV'] ?? 'test');
+        $kernel = static::createKernel()->boot(EnvAccess::get('APP_ENV', 'test'));
 
         static::$container = $kernel->getContainer();
         static::$client = new KernelClient($kernel);
@@ -50,15 +51,13 @@ abstract class ApiTestCase extends TestCase
      */
     protected static function createKernel(): Kernel
     {
-        if (false === array_key_exists('KERNEL_CLASS', $_ENV)) {
-            throw new \RuntimeException('Please, define KERNEL_CLASS variable in your .env file before you try to retrieve kernel.');
-        }
+        $kernelClass = EnvAccess::get('KERNEL_CLASS');
 
-        if (false === class_exists($_ENV['KERNEL_CLASS'])) {
+        if (false === class_exists($kernelClass)) {
             throw new \RuntimeException('Unable to retrieve not existent application kernel.');
         }
 
-        return new $_ENV['KERNEL_CLASS']();
+        return new $kernelClass();
     }
 
     /**
