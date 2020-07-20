@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Gorynych\Http;
+namespace Gorynych\Http\Routing;
 
 use Cake\Collection\Collection;
 use Gorynych\Resource\AbstractResource;
@@ -43,7 +43,7 @@ final class Router
                 $resource = $this->resourceLoader->loadResource($resourceClass);
                 $operation = $this->filterOperationsByMethod($this->filterOperationsByUri($resource));
 
-                $this->matchUri($resource->getPath(), $operation->getPath(), $matches);
+                UriMatcher::matchUri($request->getPathInfo(), $resource->getPath(), $operation->getPath(), $matches);
                 $resource->id = $matches['id'] ?? null;
 
                 break;
@@ -68,11 +68,11 @@ final class Router
      */
     private function filterOperationsByUri(AbstractResource $resource): Collection
     {
-        $self = $this;
+        $request = $this->request;
 
         $operations = (new Collection($resource->getOperations()))->filter(
-            static function (ResourceOperationInterface $operation) use ($self, $resource) {
-                return $self->matchUri($resource->getPath(), $operation->getPath());
+            static function (ResourceOperationInterface $operation) use ($request, $resource) {
+                return UriMatcher::matchUri($request->getPathInfo(), $resource->getPath(), $operation->getPath());
             }
         );
 
@@ -105,31 +105,5 @@ final class Router
         }
 
         return $operations->first();
-    }
-
-    /**
-     * Returns TRUE if provided paths combination matches request URI
-     *
-     * @param string $resourcePath
-     * @param string $operationPath
-     * @param mixed[]|null $matches
-     * @return bool
-     */
-    private function matchUri(string $resourcePath, string $operationPath, &$matches = null): bool
-    {
-        $resourcePath = self::normalizeUri($resourcePath);
-        $operationPath = self::normalizeUri($operationPath);
-        $uri = self::normalizeUri($this->request->getPathInfo());
-
-        return (bool) preg_match("#^{$resourcePath}{$operationPath}$#", $uri, $matches);
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    private static function normalizeUri(string $path): string
-    {
-        return rtrim($path, '/');
     }
 }

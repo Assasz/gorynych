@@ -13,6 +13,7 @@ use Gorynych\Http\Dto\ProblemDetails;
 use Gorynych\Http\Exception\HttpException;
 use Gorynych\Http\Exception\NotAcceptableHttpException;
 use Gorynych\Http\Formatter\FormatterFactory;
+use Gorynych\Http\Routing\Router;
 use Gorynych\Resource\ResourceLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\FileLocatorInterface;
