@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Gorynych\Testing\Constraint;
 
 use Gorynych\Testing\TestAnalysis;
+use Gorynych\Util\OpenApiScanner;
 use JsonSchema\Validator;
 use PHPUnit\Framework\Constraint\Constraint;
 
@@ -106,11 +107,8 @@ final class MatchesJsonSchema extends Constraint
     private function generateSchema(string $schemaClassName): object
     {
         $schemaReflection = new \ReflectionClass($schemaClassName);
+        $schema = (new OpenApiScanner())->scanFile($schemaReflection->getFileName(), new TestAnalysis());
 
-        $scan = \OpenApi\scan($schemaReflection->getFileName(), [
-            'analysis' => new TestAnalysis()
-        ]);
-
-        return json_decode($scan->components->schemas[0]->toJson());
+        return json_decode($schema->toJson());
     }
 }
