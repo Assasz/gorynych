@@ -36,15 +36,12 @@ final class Router
     public function findOperation(Request $request): ResourceOperationInterface
     {
         $this->request = $request;
-        $operation = null;
+        $resource = $operation = null;
 
         foreach ($this->resourceLoader->getResources() as $resourceClass) {
             try {
                 $resource = $this->resourceLoader->loadResource($resourceClass);
                 $operation = $this->filterOperationsByMethod($this->filterOperationsByUri($resource));
-
-                UriMatcher::matchUri($request->getPathInfo(), $resource->getPath(), $operation->getPath(), $matches);
-                $resource->id = $matches['id'] ?? null;
 
                 break;
             } catch (NotFoundHttpException $e) {
@@ -55,6 +52,8 @@ final class Router
         if (!$operation instanceof ResourceOperationInterface) {
             throw new NotFoundHttpException();
         }
+
+        $this->resolveResourceIdentity($resource, $operation);
 
         return $operation;
     }
@@ -105,5 +104,20 @@ final class Router
         }
 
         return $operations->first();
+    }
+
+    /**
+     * Resolves identity of the resource
+     */
+    private function resolveResourceIdentity(AbstractResource $resource, ResourceOperationInterface $operation): void
+    {
+        UriMatcher::matchUri(
+            $this->request->getPathInfo(), 
+            $resource->getPath(), 
+            $operation->getPath(), 
+            $matches
+        );
+
+        $resource->id = $matches['id'] ?? null;
     }
 }
