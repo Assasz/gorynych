@@ -38,7 +38,10 @@ final class FormatterFactory
         }
 
         throw new NotAcceptableHttpException(
-            sprintf('Not acceptable. Please, use one of supported media types: %s.', implode(', ', array_keys($this->formatters)))
+            sprintf(
+                'Unable to provide an acceptable representation. Available alternatives: %s.',
+                implode(', ', array_keys($this->formatters))
+            )
         );
     }
 
