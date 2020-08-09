@@ -8,28 +8,34 @@ declare(strict_types=1);
 
 namespace Gorynych\Resource\Exception;
 
-use Throwable;
-
 class InvalidEntityException extends \LogicException
 {
-    /** @var string[]  */
+    /** @var string[][]  */
     private array $errors;
 
     /**
-     * @param string[] $errors
-     */
-    public function __construct(array $errors = [], $message = '', int $code = 0, Throwable $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-
-        $this->errors = $errors;
-    }
-
-    /**
-     * @return string[]
+     * @return string[][]
      */
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * @param string[][] $errors
+     */
+    public static function fromArray(array $errors): self
+    {
+        $message = array_map(
+            static function (array $error): string {
+                return "{$error['property']}: {$error['message']}";
+            },
+            $errors
+        );
+
+        $self = new self(implode('; ', $message));
+        $self->errors = $errors;
+
+        return $self;
     }
 }

@@ -80,7 +80,7 @@ trait ControllerTrait
         try {
             $this->validator->setup($constraint)->validate($entity);
         } catch (InvalidEntityException $e) {
-            throw new BadRequestHttpException($e->getErrors());
+            throw new BadRequestHttpException($e->getMessage());
         }
     }
 

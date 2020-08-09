@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Adapter;
 
+use Cake\Collection\Collection;
 use Gorynych\Resource\Exception\InvalidEntityException;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -32,22 +33,19 @@ class ValidatorAdapter
      */
     public function validate(object $entity): void
     {
-        /** @var ConstraintViolationInterface[] $errors */
         $errors = $this->validator->validate($entity);
 
-        if (count($errors) > 0) {
-            /** @var string[] $errors */
-            $errors = array_map(
+        if ($errors->count() > 0) {
+            $errors = (new Collection($errors))->map(
                 static function (ConstraintViolationInterface $violation): array {
                     return [
                         'property' => $violation->getPropertyPath(),
-                        'message' => $violation->getMessage()
+                        'message' => $violation->getMessage(),
                     ];
-                },
-                $errors
+                }
             );
 
-            throw new InvalidEntityException($errors);
+            throw InvalidEntityException::fromArray($errors->toArray());
         }
     }
 

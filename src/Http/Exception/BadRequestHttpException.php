@@ -12,13 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BadRequestHttpException extends HttpException
 {
-    /**
-     * @param string|string[] $message
-     */
-    public function __construct($message = 'Bad request.', int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $message = 'Bad request.', int $code = 0, ?\Throwable $previous = null)
     {
-        parent::__construct(Response::HTTP_BAD_REQUEST, '', $code, $previous);
-
-        $this->message = $message;
+        parent::__construct(Response::HTTP_BAD_REQUEST, $message, $code, $previous);
     }
 }
