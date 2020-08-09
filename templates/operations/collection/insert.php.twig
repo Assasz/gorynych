@@ -7,7 +7,6 @@ namespace {{ rootNamespace }}\Ports\Operation\{{ entityClassName }}Collection;
 use {{ entityNamespace }};
 use {{ resourceNamespace }};
 use Gorynych\Operation\AbstractOperation;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -66,17 +65,10 @@ final class InsertOperation extends AbstractOperation
 
 {% set entityVar = '$' ~ entityClassName|lower %}
     /**
-     * @param Request $request
      * @return string[]
      */
-    public function __invoke(Request $request): array
+    public function __invoke({{ entityClassName }} {{ entityVar }}): array
     {
-        /** @var {{ entityClassName }} {{ entityVar }} */
-        {{ entityVar }} = $this->deserializeBody($request, {{ entityClassName }}::class);
-
-        $this->validate({{ entityVar }}, '{{ entityClassName }}');
-        $this->resource->insert({{ entityVar }});
-
-        return $this->iriRepresentation({{ entityVar }});
+        return ['@id' => $this->resource->insert({{ entityVar }})];
     }
 }

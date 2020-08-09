@@ -10,12 +10,11 @@ namespace Gorynych\Operation;
 
 use Gorynych\Adapter\SerializerAdapter;
 use Gorynych\Adapter\ValidatorAdapter;
-use Gorynych\Resource\AbstractResource;
-use Gorynych\Resource\CollectionResourceInterface;
+use Gorynych\Exception\NotDeserializableException;
+use Gorynych\Http\Exception\UnsupportedMediaTypeHttpException;
 use Gorynych\Resource\Exception\InvalidEntityException;
 use Gorynych\Http\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use Webmozart\Assert\Assert;
 
 trait ControllerTrait
 {
@@ -49,10 +48,16 @@ trait ControllerTrait
      * @param mixed[] $context
      * @param string $format
      * @return object
+     *
+     * @throws UnsupportedMediaTypeHttpException
      */
     protected function deserializeBody(Request $request, string $entityClass, string $definition = null, array $context = [], string $format = 'json'): object
     {
-        return $this->serializer->setup($definition)->deserialize($request->getContent(), $entityClass, $format, $context);
+        try {
+            return $this->serializer->setup($definition)->deserialize($request->getContent(), $entityClass, $format, $context);
+        } catch (NotDeserializableException $e) {
+            throw new UnsupportedMediaTypeHttpException();
+        }
     }
 
     /**
@@ -73,6 +78,7 @@ trait ControllerTrait
      *
      * @param object $entity
      * @param string $constraint
+     *
      * @throws BadRequestHttpException
      */
     protected function validate(object $entity, string $constraint): void
@@ -82,22 +88,5 @@ trait ControllerTrait
         } catch (InvalidEntityException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-    }
-
-    /**
-     * Returns IRI representation of the resource
-     *
-     * @param object|null $entity if collection resource
-     * @return string[]
-     */
-    protected function iriRepresentation(object $entity = null): array
-    {
-        Assert::isInstanceOf($this->resource, AbstractResource::class);
-
-        return [
-            '@id' => $this->resource instanceof CollectionResourceInterface ?
-                $this->resource->getPath() . $entity->getId() :
-                $this->resource->getPath()
-        ];
     }
 }

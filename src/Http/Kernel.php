@@ -86,7 +86,7 @@ abstract class Kernel
 
         try {
             $operation = $router->findOperation($request);
-            $output = $operation($request);
+            $output = $operation->handle($request);
         } catch (\Throwable $t) {
             if ('dev' === $this->env || ('test' === $this->env && !($t instanceof HttpException))) {
                 throw $t;

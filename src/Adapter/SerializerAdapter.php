@@ -8,10 +8,12 @@ declare(strict_types=1);
 
 namespace Gorynych\Adapter;
 
+use Gorynych\Exception\NotDeserializableException;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -48,10 +50,16 @@ class SerializerAdapter
      * @param string $format
      * @param mixed[] $context
      * @return object
+     *
+     * @throws NotDeserializableException
      */
     public function deserialize(string $data, string $outputClass, string $format, array $context = []): object
     {
-        return $this->serializer->deserialize($data, $outputClass, $format, $context);
+        try {
+            return $this->serializer->deserialize($data, $outputClass, $format, $context);
+        } catch (NotEncodableValueException $e) {
+            throw new NotDeserializableException($e->getMessage());
+        }
     }
 
     /**

@@ -59,10 +59,7 @@ final class RemoveOperation extends AbstractOperation
         return Response::HTTP_NO_CONTENT;
     }
 
-    /**
-     * @param Request $request
-     */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): void
     {
         $this->resource->remove();
     }

@@ -57,12 +57,8 @@ final class GetOperation extends AbstractOperation
         return '/';
     }
 
-    /**
-     * @param Request $request
-     * @return mixed[]
-     */
-    public function __invoke(Request $request): array
+    public function __invoke(Request $request): {{ entityClassName }}
     {
-        return $this->normalizeResource($this->resource->retrieve());
+        return $this->resource->retrieve();
     }
 }

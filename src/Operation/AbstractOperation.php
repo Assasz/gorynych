@@ -9,7 +9,9 @@ declare(strict_types=1);
 namespace Gorynych\Operation;
 
 use Gorynych\Resource\AbstractResource;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Webmozart\Assert\Assert;
 
 abstract class AbstractOperation implements ResourceOperationInterface
 {
@@ -27,7 +29,7 @@ abstract class AbstractOperation implements ResourceOperationInterface
     /**
      * {@inheritdoc}
      */
-    public function setResource($resource): self
+    public function setResource(AbstractResource $resource): self
     {
         $this->resource = $resource;
 
@@ -40,5 +42,42 @@ abstract class AbstractOperation implements ResourceOperationInterface
     public function getResponseStatus(): int
     {
         return Response::HTTP_OK;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Request $request)
+    {
+        $invoke = new \ReflectionMethod($this, '__invoke');
+        $argumentType = current($invoke->getParameters())->getType()->getName();
+
+        if ($this->isDeserializationNeeded($argumentType)) {
+            $input = $this->deserializeBody($request, $argumentType, null, [], $request->getContentType());
+            $this->validate($input, (new \ReflectionClass($input))->getShortName());
+        }
+
+        Assert::isCallable($this);
+
+        /** @var callable|AbstractOperation $this */
+        $output = $this($input ?? $request);
+
+        return $this->isNormalizationNeeded($output) ? $this->normalizeResource($output) : $output;
+    }
+
+    private function isDeserializationNeeded(string $argumentType): bool
+    {
+        return Request::class !== $argumentType && class_exists($argumentType);
+    }
+
+    /**
+     * @param mixed $resource
+     */
+    private function isNormalizationNeeded($resource): bool
+    {
+        return (
+            is_object($resource) ||
+            (is_array($resource) && !empty($resource) && is_object(current($resource)))
+        );
     }
 }

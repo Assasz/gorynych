@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Exception;
 
-final class KernelNotBootedException extends \RuntimeException
+final class NotDeserializableException extends \RuntimeException
 {
 
 }

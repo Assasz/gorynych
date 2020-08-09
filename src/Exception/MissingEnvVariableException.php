@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Exception;
 
-class MissingEnvVariableException extends \RuntimeException
+final class MissingEnvVariableException extends \RuntimeException
 {
     public function __construct(string $variable, int $code = 0, \Throwable $previous = null)
     {

@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Exception;
 
-class NotExistentResourceException extends \RuntimeException
+final class NotExistentResourceException extends \RuntimeException
 {
     public function __construct(string $resource, int $code = 0, \Throwable $previous = null)
     {

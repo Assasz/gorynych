@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Gorynych\Resource;
 
+use Cake\Collection\Collection;
+
 interface ResourceInterface
 {
     /**
@@ -22,7 +24,7 @@ interface ResourceInterface
      * Retrieves resource
      * GET /resources/{id} | /resources
      *
-     * @return mixed
+     * @return object|object[]|Collection
      */
     public function retrieve();
 
@@ -37,8 +39,9 @@ interface ResourceInterface
      * PUT /resources/{id} | /resources
      *
      * @param mixed $item
+     * @return string Path to the replaced resource
      */
-    public function replace($item): void;
+    public function replace($item): string;
 
     /**
      * Saves changes made to resource

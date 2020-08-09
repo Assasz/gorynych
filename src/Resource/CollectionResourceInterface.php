@@ -15,6 +15,7 @@ interface CollectionResourceInterface extends ResourceInterface
      * POST /resources
      *
      * @param mixed $item
+     * @return string Path to the inserted resource
      */
-    public function insert($item): void;
+    public function insert($item): string;
 }

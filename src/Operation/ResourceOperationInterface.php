@@ -35,14 +35,13 @@ interface ResourceOperationInterface
     public function getResponseStatus(): int;
 
     /**
-     * @param mixed|AbstractResource $resource
      * @return mixed|void
      */
-    public function setResource($resource);
+    public function setResource(AbstractResource $resource);
 
     /**
      * @param Request $request
      * @return mixed
      */
-    public function __invoke(Request $request);
+    public function handle(Request $request);
 }

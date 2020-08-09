@@ -10,7 +10,7 @@ namespace Gorynych\Http\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class NotAcceptableHttpException extends HttpException
+final class NotAcceptableHttpException extends HttpException
 {
     public function __construct(string $message = 'Not acceptable.', int $code = 0, ?\Throwable $previous = null)
     {

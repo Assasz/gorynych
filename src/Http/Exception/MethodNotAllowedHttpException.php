@@ -10,7 +10,7 @@ namespace Gorynych\Http\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class MethodNotAllowedHttpException extends HttpException
+final class MethodNotAllowedHttpException extends HttpException
 {
     public function __construct(string $message = 'Method not allowed.', int $code = 0, ?\Throwable $previous = null)
     {

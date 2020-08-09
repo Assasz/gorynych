@@ -7,7 +7,6 @@ namespace {{ rootNamespace }}\Ports\Operation\{{ entityClassName }};
 use {{ entityNamespace }};
 use {{ resourceNamespace }};
 use Gorynych\Operation\AbstractOperation;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @OA\Put(
@@ -65,20 +64,12 @@ final class ReplaceOperation extends AbstractOperation
         return '/';
     }
 
-{% set entityVar = '$' ~ entityClassName|lower %}
 {% set newEntityVar = '$new' ~ entityClassName %}
     /**
-     * @param Request $request
      * @return string[]
      */
-    public function __invoke(Request $request): array
+    public function __invoke({{ entityClassName }} {{ newEntityVar }}): array
     {
-        /** @var {{ entityClassName }} {{ newEntityVar }} */
-        {{ newEntityVar }} = $this->deserializeBody($request, {{ entityClassName }}::class);
-
-        $this->validate({{ newEntityVar }}, '{{ entityClassName }}');
-        $this->resource->replace({{ newEntityVar }});
-
-        return $this->iriRepresentation();
+        return ['@id' => $this->resource->replace({{ newEntityVar }})];
     }
 }
