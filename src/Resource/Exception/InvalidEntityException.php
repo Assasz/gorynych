@@ -8,33 +8,32 @@ declare(strict_types=1);
 
 namespace Gorynych\Resource\Exception;
 
+use Gorynych\Resource\Dto\EntityViolation;
+
 class InvalidEntityException extends \LogicException
 {
-    /** @var string[][]  */
+    /** @var EntityViolation[]  */
     private array $errors;
 
     /**
-     * @return string[][]
+     * @return EntityViolation[]
      */
     public function getErrors(): array
     {
         return $this->errors;
     }
 
-    /**
-     * @param string[][] $errors
-     */
-    public static function fromArray(array $errors): self
+    public static function fromViolations(EntityViolation ...$violations): self
     {
         $message = array_map(
-            static function (array $error): string {
-                return "{$error['property']}: {$error['message']}";
+            static function (EntityViolation $violation): string {
+                return "{$violation->getProperty()}: {$violation->getMessage()}";
             },
-            $errors
+            $violations
         );
 
         $self = new self(implode('; ', $message));
-        $self->errors = $errors;
+        $self->errors = $violations;
 
         return $self;
     }
