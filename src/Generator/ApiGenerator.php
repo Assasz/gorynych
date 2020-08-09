@@ -14,9 +14,9 @@ use Gorynych\Resource\AbstractResource;
 use Gorynych\Resource\CollectionResourceInterface;
 use Gorynych\Resource\ResourceRegistryBuilder;
 use Gorynych\Resource\ResourceInterface;
+use Gorynych\Testing\EntityMock;
 use Gorynych\Util\EnvAccess;
-use Gorynych\Util\FixturesFactory;
-use Gorynych\Util\OpenApiScanner;
+use Gorynych\Util\SchemaFactory;
 use Symfony\Component\Yaml\Yaml;
 
 final class ApiGenerator
@@ -24,8 +24,7 @@ final class ApiGenerator
     private TwigAdapter $templateEngine;
     private ResourceRegistryBuilder $resourcesConfigBuilder;
     private FileWriter $fileWriter;
-    private FixturesFactory $fixturesFactory;
-    private OpenApiScanner $docsScanner;
+    private SchemaFactory $schemaFactory;
 
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
@@ -35,14 +34,12 @@ final class ApiGenerator
         TwigAdapter $templateEngine,
         ResourceRegistryBuilder $resourcesConfigBuilder,
         FileWriter $fileWriter,
-        FixturesFactory $fixturesFactory,
-        OpenApiScanner $docsScanner
+        SchemaFactory $schemaFactory
     ) {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
         $this->fileWriter = $fileWriter;
-        $this->fixturesFactory = $fixturesFactory;
-        $this->docsScanner = $docsScanner;
+        $this->schemaFactory = $schemaFactory;
     }
 
     /**
@@ -84,7 +81,9 @@ final class ApiGenerator
     private function generateFixtures(): self
     {
         $path = EnvAccess::get('PROJECT_DIR') . "/config/fixtures/{$this->templateDto->resourceSimpleName}.yaml";
-        $fixtures = $this->fixturesFactory->create($this->templateDto->entityNamespace);
+        $entityNamespace = $this->templateDto->entityNamespace;
+
+        $fixtures[$entityNamespace]["fixture_1"] = (array) EntityMock::create($entityNamespace);
 
         $this->fileWriter->write($path, Yaml::dump($fixtures, 3, 2));
 
@@ -128,7 +127,7 @@ final class ApiGenerator
     {
         $this->fileWriter->forceOverwrite()->write(
             EnvAccess::get('PROJECT_DIR') . '/openapi/openapi.yaml',
-            $this->docsScanner->scan()->toYaml()
+            $this->schemaFactory->createFromProject()->toYaml()
         );
 
         return $this;

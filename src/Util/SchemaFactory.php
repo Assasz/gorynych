@@ -12,12 +12,12 @@ use OpenApi\Analysis;
 use OpenApi\Annotations\OpenApi;
 use OpenApi\Annotations\Schema;
 
-final class OpenApiScanner
+final class SchemaFactory
 {
     /**
-     * Scans Open API annotations across project source and config directories
+     * Creates JSON schema from entire project
      */
-    public function scan(): OpenApi
+    public function createFromProject(): OpenApi
     {
         return \OpenApi\scan([
             EnvAccess::get('PROJECT_DIR') . '/src',
@@ -26,18 +26,18 @@ final class OpenApiScanner
     }
 
     /**
-     * Scans single file and returns its schema
+     * Creates JSON schema from single file
      *
      * @throws \RuntimeException
      */
-    public function scanFile(string $file, Analysis $analysis = null): Schema
+    public function createFromFile(string $file, Analysis $analysis = null): Schema
     {
         $schemas = \OpenApi\scan($file, ['analysis' => $analysis ?? new Analysis()])
             ->components
             ->schemas;
 
         if (true === empty($schemas)) {
-            throw new \RuntimeException('Non existent schema.');
+            throw new \RuntimeException('Invalid schema.');
         }
 
         return current($schemas);

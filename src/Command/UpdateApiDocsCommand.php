@@ -10,7 +10,7 @@ namespace Gorynych\Command;
 
 use Gorynych\Generator\FileWriter;
 use Gorynych\Util\EnvAccess;
-use Gorynych\Util\OpenApiScanner;
+use Gorynych\Util\SchemaFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,14 +22,14 @@ final class UpdateApiDocsCommand extends Command
     protected static $defaultName = 'gorynych:update-api-docs';
 
     private FileWriter $fileWriter;
-    private OpenApiScanner $docsScanner;
+    private SchemaFactory $schemaFactory;
 
-    public function __construct(FileWriter $fileWriter, OpenApiScanner $docsScanner)
+    public function __construct(FileWriter $fileWriter, SchemaFactory $schemaFactory)
     {
         parent::__construct();
 
         $this->fileWriter = $fileWriter;
-        $this->docsScanner = $docsScanner;
+        $this->schemaFactory = $schemaFactory;
     }
 
     protected function configure(): void
@@ -44,7 +44,7 @@ final class UpdateApiDocsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $path = EnvAccess::get('PROJECT_DIR') . ($input->getArgument('outputPath') ?? '/openapi/openapi.yaml');
 
-        $this->fileWriter->forceOverwrite()->write($path, $this->docsScanner->scan()->toYaml());
+        $this->fileWriter->forceOverwrite()->write($path, $this->schemaFactory->createFromProject()->toYaml());
 
         $io->success("Docs updated at path {$path}");
 
