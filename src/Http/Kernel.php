@@ -75,17 +75,14 @@ abstract class Kernel
             throw new KernelNotBootedException('Unable to handle request when kernel is not booted. Please, boot kernel first.');
         }
 
-        $router = new Router(new ResourceLoader($this->getContainer(), $this->getConfigLocator()));
-        $formatterFactory = new FormatterFactory($this->getConfigLocator());
-
         try {
-            $formatter = $formatterFactory->create(...$request->getAcceptableContentTypes());
+            $formatter = $this->initializeFormatterFactory()->create(...$request->getAcceptableContentTypes());
         } catch (NotAcceptableHttpException $e) {
             return new Response($e->getMessage(), $e->getStatusCode());
         }
 
         try {
-            $operation = $router->findOperation($request);
+            $operation = $this->initializeRouter()->findOperation($request);
             $output = $operation->handle($request);
         } catch (\Throwable $t) {
             if ('dev' === $this->env || ('test' === $this->env && !($t instanceof HttpException))) {
@@ -111,9 +108,16 @@ abstract class Kernel
      */
     abstract protected function loadConfiguration(): void;
 
-    /**
-     * Initializes Dependency Injection container
-     */
+    protected function initializeRouter(): Router
+    {
+        return new Router(new ResourceLoader($this->getContainer(), $this->getConfigLocator()));
+    }
+
+    protected function initializeFormatterFactory(): FormatterFactory
+    {
+        return new FormatterFactory($this->getConfigLocator());
+    }
+
     private function initializeContainer(): void
     {
         $this->container = new ContainerBuilder();
