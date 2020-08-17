@@ -49,6 +49,8 @@ abstract class AbstractOperation implements ResourceOperationInterface
      */
     public function handle(Request $request)
     {
+        Assert::isCallable($this);
+
         $invoke = new \ReflectionMethod($this, '__invoke');
         $argumentType = current($invoke->getParameters())->getType()->getName();
 
@@ -56,8 +58,6 @@ abstract class AbstractOperation implements ResourceOperationInterface
             $input = $this->deserializeBody($request, $argumentType, null, [], $request->getContentType());
             $this->validate($input, (new \ReflectionClass($input))->getShortName());
         }
-
-        Assert::isCallable($this);
 
         /** @var callable|AbstractOperation $this */
         $output = $this($input ?? $request);
