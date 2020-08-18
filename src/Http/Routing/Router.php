@@ -112,9 +112,9 @@ final class Router
     private function resolveResourceIdentity(AbstractResource $resource, ResourceOperationInterface $operation): void
     {
         UriMatcher::matchUri(
-            $this->request->getPathInfo(), 
-            $resource->getPath(), 
-            $operation->getPath(), 
+            $this->request->getPathInfo(),
+            $resource->getPath(),
+            $operation->getPath(),
             $matches
         );
 

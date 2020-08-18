@@ -84,15 +84,14 @@ abstract class Kernel
         try {
             $operation = $this->initializeRouter()->findOperation($request);
             $output = $operation->handle($request);
-        } catch (\Throwable $t) {
-            if ('dev' === $this->env || ('test' === $this->env && !($t instanceof HttpException))) {
-                throw $t;
+        } catch (\Throwable $throwable) {
+            if ('dev' === $this->env || ('test' === $this->env && !($throwable instanceof HttpException))) {
+                throw $throwable;
             }
 
-            return $formatter->format(
-                ProblemDetails::fromThrowable($t),
-                $t instanceof HttpException ? $t->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            $problemDetails = ProblemDetails::fromThrowable($throwable);
+
+            return $formatter->format($problemDetails, $problemDetails->status);
         }
 
         return $formatter->format($output, $operation->getResponseStatus());

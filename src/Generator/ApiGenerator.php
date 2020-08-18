@@ -102,11 +102,14 @@ final class ApiGenerator
         $newConfigRecords = (new Collection($this->resolveTemplateSchema()))
             ->map(static function (array $operationSchema) use ($templateParameters): string {
                 return $templateParameters->rootNamespace . '\\' .
-                    str_replace('/', '\\',
+                    str_replace(
+                        '/',
+                        '\\',
                         sprintf(
                             rtrim(ltrim($operationSchema['operation']['output'], '/src'), '.php'),
                             $templateParameters->entityClassName
-                        ));
+                        )
+                    );
             })
             ->toList();
 

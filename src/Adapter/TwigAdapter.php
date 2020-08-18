@@ -38,7 +38,8 @@ class TwigAdapter
     protected function setup(): void
     {
         $this->twig = new Environment(
-            new FilesystemLoader($this->getGorynychTemplatesPath()), [
+            new FilesystemLoader($this->getGorynychTemplatesPath()),
+            [
                 'cache' => dirname(__DIR__, 2) . '/var/twig',
             ]
         );

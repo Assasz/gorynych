@@ -10,5 +10,4 @@ namespace Gorynych\Exception;
 
 final class NotDeserializableException extends \RuntimeException
 {
-
 }
