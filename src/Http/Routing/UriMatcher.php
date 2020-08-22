@@ -26,8 +26,8 @@ final class UriMatcher
         return (bool) preg_match("#^{$path}$#", $uri, $matches);
     }
 
-    private static function normalizeUri(string $path): string
+    private static function normalizeUri(string $uri): string
     {
-        return rtrim(str_replace('//', '/', $path), '/');
+        return rtrim(str_replace('//', '/', $uri), '/');
     }
 }
