@@ -69,7 +69,7 @@ final class Router
     {
         $request = $this->request;
 
-        $operations = (new Collection($resource->getOperations()))->filter(
+        $operations = $resource->getOperations()->filter(
             static function (ResourceOperationInterface $operation) use ($request, $resource): bool {
                 return UriMatcher::matchUri($request->getPathInfo(), $resource->getPath(), $operation->getPath());
             }

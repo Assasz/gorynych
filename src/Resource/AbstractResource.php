@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Gorynych\Resource;
 
+use Cake\Collection\Collection;
 use Gorynych\Operation\ResourceOperationInterface;
 
 abstract class AbstractResource
@@ -41,10 +42,10 @@ abstract class AbstractResource
     }
 
     /**
-     * @return ResourceOperationInterface[]
+     * @return ResourceOperationInterface[]|Collection
      */
-    public function getOperations(): array
+    public function getOperations(): Collection
     {
-        return $this->operations;
+        return new Collection($this->operations);
     }
 }
