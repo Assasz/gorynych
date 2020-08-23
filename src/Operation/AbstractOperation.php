@@ -52,7 +52,8 @@ abstract class AbstractOperation implements ResourceOperationInterface
         Assert::isCallable($this);
 
         $invoke = new \ReflectionMethod($this, '__invoke');
-        $argumentType = current($invoke->getParameters())->getType()->getName();
+        $argumentType = empty($invoke->getParameters()) ?
+            Request::class : current($invoke->getParameters())->getType()->getName();
 
         if ($this->isDeserializationNeeded($argumentType)) {
             $input = $this->deserializeBody($request, $argumentType, null, [], $request->getContentType());
