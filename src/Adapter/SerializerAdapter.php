@@ -10,6 +10,7 @@ namespace Gorynych\Adapter;
 
 use Gorynych\Exception\NotDeserializableException;
 use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -60,6 +61,27 @@ class SerializerAdapter
         } catch (NotEncodableValueException $e) {
             throw new NotDeserializableException($e->getMessage());
         }
+    }
+
+    /**
+     * Returns TRUE is normalization for provided data representation is needed
+     *
+     * @param mixed $data
+     */
+    public function isNormalizationNeeded($data): bool
+    {
+        return (
+            is_object($data) ||
+            (is_array($data) && !empty($data) && is_object(current($data)))
+        );
+    }
+
+    /**
+     * Returns TRUE if deserialization for provided type is needed
+     */
+    public function isDeserializationNeeded(string $type): bool
+    {
+        return Request::class !== $type && class_exists($type);
     }
 
     /**

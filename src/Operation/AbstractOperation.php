@@ -55,30 +55,49 @@ abstract class AbstractOperation implements ResourceOperationInterface
         $argumentType = empty($invoke->getParameters()) ?
             Request::class : current($invoke->getParameters())->getType()->getName();
 
-        if ($this->isDeserializationNeeded($argumentType)) {
-            $input = $this->deserializeBody($request, $argumentType, null, [], $request->getContentType());
+        if ($this->serializer->isDeserializationNeeded($argumentType)) {
+            $input = $this->deserializeBody(
+                $request,
+                $argumentType,
+                $this->getDeserializationContext()['definition'],
+                $this->getDeserializationContext()['context'],
+                $request->getContentType()
+            );
+
             $this->validate($input, (new \ReflectionClass($input))->getShortName());
         }
 
         /** @var callable|AbstractOperation $this */
         $output = $this($input ?? $request);
 
-        return $this->isNormalizationNeeded($output) ? $this->normalizeResource($output) : $output;
-    }
-
-    private function isDeserializationNeeded(string $argumentType): bool
-    {
-        return Request::class !== $argumentType && class_exists($argumentType);
+        return $this->serializer->isNormalizationNeeded($output) ?
+            $this->normalizeResource(
+                $output,
+                $this->getNormalizationContext()['definition'],
+                $this->getNormalizationContext()['context']
+            ) :
+            $output;
     }
 
     /**
-     * @param mixed $resource
+     * @return array{definition: ?string, context: array}
      */
-    private function isNormalizationNeeded($resource): bool
+    protected function getDeserializationContext(): array
     {
-        return (
-            is_object($resource) ||
-            (is_array($resource) && !empty($resource) && is_object(current($resource)))
-        );
+        return [
+            'definition' => null,
+            'context' => [],
+        ];
+    }
+
+    /**
+     * @return array{definition: ?string, context: array}
+     */
+    protected function getNormalizationContext(): array
+    {
+        return [
+            'definition' => null,
+            'context' => [],
+        ];
     }
 }
