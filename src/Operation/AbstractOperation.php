@@ -55,7 +55,7 @@ abstract class AbstractOperation implements ResourceOperationInterface
         $argumentType = empty($invoke->getParameters()) ?
             Request::class : current($invoke->getParameters())->getType()->getName();
 
-        if ($this->serializer->isDeserializationNeeded($argumentType)) {
+        if ($this->serializer->canDeserialize($argumentType)) {
             $input = $this->deserializeBody(
                 $request,
                 $argumentType,
@@ -70,7 +70,7 @@ abstract class AbstractOperation implements ResourceOperationInterface
         /** @var callable|AbstractOperation $this */
         $output = $this($input ?? $request);
 
-        return $this->serializer->isNormalizationNeeded($output) ?
+        return $this->serializer->canNormalize($output) ?
             $this->normalizeResource(
                 $output,
                 $this->getNormalizationContext()['definition'],

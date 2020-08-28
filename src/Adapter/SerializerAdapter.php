@@ -64,11 +64,11 @@ class SerializerAdapter
     }
 
     /**
-     * Returns TRUE is normalization for provided data representation is needed
+     * Returns TRUE is normalization for provided data representation can be processed
      *
      * @param mixed $data
      */
-    public function isNormalizationNeeded($data): bool
+    public function canNormalize($data): bool
     {
         return (
             is_object($data) ||
@@ -77,9 +77,9 @@ class SerializerAdapter
     }
 
     /**
-     * Returns TRUE if deserialization for provided type is needed
+     * Returns TRUE if deserialization for provided type can be processed
      */
-    public function isDeserializationNeeded(string $type): bool
+    public function canDeserialize(string $type): bool
     {
         return Request::class !== $type && class_exists($type);
     }
