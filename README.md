@@ -1,8 +1,8 @@
 ## Gorynych
 
-Mighty REST API foundation, that leverages RMR architecture on the top of Symfony components.
+Mighty REST API foundation, that leverages ROR architecture on the top of Symfony components.
 
-Under development.
+Under development. See [Gorynych Skeleton](https://github.com/Assasz/gorynych-skeleton).
 
 ### Installation
 
