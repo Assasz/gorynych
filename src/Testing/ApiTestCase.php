@@ -11,6 +11,7 @@ namespace Gorynych\Testing;
 use Gorynych\Adapter\EntityManagerAdapterInterface;
 use Gorynych\Http\Kernel;
 use Gorynych\Http\KernelClient;
+use Gorynych\Http\RequestFactory;
 use Gorynych\Util\EnvAccess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -29,7 +30,7 @@ abstract class ApiTestCase extends TestCase
         $kernel = static::createKernel()->boot(EnvAccess::get('APP_ENV', 'test'));
 
         static::$container = $kernel->getContainer();
-        static::$client = new KernelClient($kernel);
+        static::$client = new KernelClient($kernel, new RequestFactory());
 
         /** @var EntityManagerAdapterInterface $entityManager */
         $entityManager = static::$container->get('entity_manager.adapter');
