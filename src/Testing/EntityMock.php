@@ -18,11 +18,14 @@ final class EntityMock
         $self = new self();
 
         foreach ((new \ReflectionClass($entityNamespace))->getProperties() as $property) {
-            if ('id' === $property->getName()) {
+            if (
+                'id' === $property->getName() ||
+                null === $value = $self->resolvePropertyValue($property)
+            ) {
                 continue;
             }
 
-            $self->{$property->getName()} = $self->resolvePropertyValue($property);
+            $self->{$property->getName()} = $value;
         }
 
         return $self;
