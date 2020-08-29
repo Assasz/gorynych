@@ -10,7 +10,7 @@ namespace Gorynych\Testing;
 
 use Gorynych\Adapter\EntityManagerAdapterInterface;
 
-trait DatabaseRefreshableTrait
+trait DatabaseRecreatableTrait
 {
     protected static ?EntityManagerAdapterInterface $entityManager;
 

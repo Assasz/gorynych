@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class ApiTestCase extends TestCase
 {
     use ApiAssertionsTrait;
-    use DatabaseRefreshableTrait;
+    use DatabaseRecreatableTrait;
 
     protected static ?ContainerInterface $container;
     protected static ?KernelClient $client;
@@ -31,10 +31,7 @@ abstract class ApiTestCase extends TestCase
 
         static::$container = $kernel->getContainer();
         static::$client = new KernelClient($kernel, new RequestFactory());
-
-        /** @var EntityManagerAdapterInterface $entityManager */
-        $entityManager = static::$container->get('entity_manager.adapter');
-        static::$entityManager = $entityManager;
+        static::$entityManager = static::$container->get('entity_manager.adapter');
 
         static::recreateDatabaseSchema();
     }
@@ -64,6 +61,7 @@ abstract class ApiTestCase extends TestCase
     /**
      * @return mixed[]
      * @throws \BadMethodCallException
+     * @throws \RuntimeException
      */
     protected static function normalizeResponse(): array
     {
@@ -71,8 +69,14 @@ abstract class ApiTestCase extends TestCase
             throw new \BadMethodCallException('Cannot normalize empty response.');
         }
 
-        $data = json_decode($response->getContent(), true);
+        if ('application/json' === $response->headers->get('Content-Type')) {
+            $data = json_decode($response->getContent(), true);
+        }
 
-        return $data['data'] ?? $data;
+        if (false === isset($data) && false === empty($response->getContent())) {
+            throw new \RuntimeException('Failed to normalize non empty response.');
+        }
+
+        return $data['data'] ?? $data ?? [];
     }
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Gorynych\Testing;
 
 use Faker\Factory;
+use Webmozart\Assert\Assert;
 
 final class EntityMock
 {
@@ -21,7 +22,7 @@ final class EntityMock
                 continue;
             }
 
-            $self->{$property->getName()} = self::resolvePropertyValue($property);
+            $self->{$property->getName()} = $self->resolvePropertyValue($property);
         }
 
         return $self;
@@ -30,10 +31,11 @@ final class EntityMock
     /**
      * @return bool|int|mixed|string|null
      */
-    private static function resolvePropertyValue(\ReflectionProperty $property)
+    private function resolvePropertyValue(\ReflectionProperty $property)
     {
-        /** @var \ReflectionNamedType $propertyType */
         $propertyType = $property->getType();
+        Assert::isInstanceOf($propertyType, \ReflectionNamedType::class);
+
         $faker = Factory::create();
 
         switch ($propertyType->getName()) {
