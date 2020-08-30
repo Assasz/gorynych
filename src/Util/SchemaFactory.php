@@ -8,38 +8,51 @@ declare(strict_types=1);
 
 namespace Gorynych\Util;
 
-use OpenApi\Analysis;
-use OpenApi\Annotations\OpenApi;
+use Cake\Collection\Collection;
 use OpenApi\Annotations\Schema;
+use const OpenApi\Annotations\UNDEFINED;
 
 final class SchemaFactory
 {
-    /**
-     * Creates JSON schema from entire project
-     */
-    public function createFromProject(): OpenApi
+    /** @var Collection<int, Schema> */
+    private Collection $schemas;
+
+    public function __construct(OAReader $oaReader)
     {
-        return \OpenApi\scan([
-            EnvAccess::get('PROJECT_DIR') . '/src',
-            EnvAccess::get('PROJECT_DIR') . '/config',
-        ]);
+        $this->schemas = new Collection($oaReader->read()->components->schemas);;
     }
 
     /**
-     * Creates JSON schema from single file
-     *
-     * @throws \RuntimeException
+     * Creates single JSON schema for provided class name
      */
-    public function createFromFile(string $file, Analysis $analysis = null): Schema
+    public function create(string $className): string
     {
-        $schemas = \OpenApi\scan($file, ['analysis' => $analysis ?? new Analysis()])
-            ->components
-            ->schemas;
+        $schemaName = (new \ReflectionClass($className))->getShortName();
 
-        if (true === empty($schemas)) {
-            throw new \RuntimeException('Invalid schema.');
+        $schema = $this->schemas->filter(
+            static function(Schema $schema) use ($schemaName): bool {
+                return $schema->schema === $schemaName;
+            }
+        )->first();
+
+        $relatedSchemas = new Collection([$schema]);
+
+        foreach ($schema->properties as $property) {
+            if (UNDEFINED === $property->ref) {
+                continue;
+            }
+
+            $relatedSchemas = $relatedSchemas->append(
+                $this->schemas->filter(
+                    static function(Schema $schema) use ($property): bool {
+                        return $schema->schema === ucfirst($property->property);
+                    }
+                )
+            );
         }
 
-        return current($schemas);
+        return json_encode([
+            'schemas' => $relatedSchemas->toArray()
+        ]);
     }
 }

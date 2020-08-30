@@ -8,8 +8,6 @@ declare(strict_types=1);
 
 namespace Gorynych\Testing\Constraint;
 
-use Gorynych\Testing\TestAnalysis;
-use Gorynych\Util\SchemaFactory;
 use JsonSchema\Validator;
 use PHPUnit\Framework\Constraint\Constraint;
 
@@ -18,10 +16,10 @@ final class MatchesJsonSchema extends Constraint
     private object $schema;
     private ?int $checkMode;
 
-    public function __construct(string $schemaClassName, ?int $checkMode = null)
+    public function __construct(object $schema, ?int $checkMode = null)
     {
+        $this->schema = $schema;
         $this->checkMode = $checkMode;
-        $this->schema = $this->generateSchema($schemaClassName);
     }
 
     /**
@@ -99,16 +97,5 @@ final class MatchesJsonSchema extends Constraint
         }
 
         return $document;
-    }
-
-    /**
-     * Generates JSON schema for given class name
-     */
-    private function generateSchema(string $schemaClassName): object
-    {
-        $schemaReflection = new \ReflectionClass($schemaClassName);
-        $schema = (new SchemaFactory())->createFromFile($schemaReflection->getFileName(), new TestAnalysis());
-
-        return json_decode($schema->toJson());
     }
 }

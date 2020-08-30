@@ -16,7 +16,7 @@ use Gorynych\Resource\ResourceRegistryBuilder;
 use Gorynych\Resource\ResourceInterface;
 use Gorynych\Testing\EntityMock;
 use Gorynych\Util\EnvAccess;
-use Gorynych\Util\SchemaFactory;
+use Gorynych\Util\OAReader;
 use Symfony\Component\Yaml\Yaml;
 
 final class ApiGenerator
@@ -24,7 +24,7 @@ final class ApiGenerator
     private TwigAdapter $templateEngine;
     private ResourceRegistryBuilder $resourcesConfigBuilder;
     private FileWriter $fileWriter;
-    private SchemaFactory $schemaFactory;
+    private OAReader $oaReader;
 
     /** @var \ReflectionClass<AbstractResource>|null */
     private ?\ReflectionClass $resourceReflection;
@@ -34,12 +34,12 @@ final class ApiGenerator
         TwigAdapter $templateEngine,
         ResourceRegistryBuilder $resourcesConfigBuilder,
         FileWriter $fileWriter,
-        SchemaFactory $schemaFactory
+        OAReader $oaReader
     ) {
         $this->templateEngine = $templateEngine;
         $this->resourcesConfigBuilder = $resourcesConfigBuilder;
         $this->fileWriter = $fileWriter;
-        $this->schemaFactory = $schemaFactory;
+        $this->oaReader = $oaReader;
     }
 
     /**
@@ -130,7 +130,7 @@ final class ApiGenerator
     {
         $this->fileWriter->forceOverwrite()->write(
             EnvAccess::get('PROJECT_DIR') . '/openapi/openapi.yaml',
-            $this->schemaFactory->createFromProject()->toYaml()
+            $this->oaReader->read()->toYaml()
         );
 
         return $this;

@@ -10,6 +10,7 @@ namespace Gorynych\Testing;
 
 use Gorynych\Testing\Constraint\ContainsSubset;
 use Gorynych\Testing\Constraint\MatchesJsonSchema;
+use Gorynych\Util\SchemaFactory;
 
 trait ApiAssertionsTrait
 {
@@ -56,7 +57,8 @@ trait ApiAssertionsTrait
      */
     private static function matchesJsonSchema($data, string $schemaClassName, ?int $checkMode, string $message = ''): void
     {
-        $constraint = new MatchesJsonSchema($schemaClassName, $checkMode);
+        $schema = json_decode(static::$container->get(SchemaFactory::class)->create($schemaClassName));
+        $constraint = new MatchesJsonSchema($schema, $checkMode);
 
         static::assertThat($data, $constraint, $message);
     }
