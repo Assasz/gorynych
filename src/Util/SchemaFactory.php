@@ -19,7 +19,7 @@ final class SchemaFactory
 
     public function __construct(OAReader $oaReader)
     {
-        $this->schemas = new Collection($oaReader->read()->components->schemas);;
+        $this->schemas = new Collection($oaReader->read()->components->schemas);
     }
 
     /**
