@@ -9,6 +9,9 @@ declare(strict_types=1);
 namespace Gorynych\Util;
 
 use Cake\Collection\Collection;
+use Cake\Collection\CollectionInterface;
+use OpenApi\Annotations\Items;
+use OpenApi\Annotations\Property;
 use OpenApi\Annotations\Schema;
 use const OpenApi\Annotations\UNDEFINED;
 
@@ -35,24 +38,48 @@ final class SchemaFactory
             }
         )->first();
 
-        $relatedSchemas = new Collection([$schema]);
+        $relatedSchemas = $this->getRelatedSchemas($schema)->toArray();
+        $schema = json_decode(json_encode($schema), true);
+        $schema['components']['schemas'] = $relatedSchemas;
 
-        foreach ($schema->properties as $property) {
-            if (UNDEFINED === $property->ref) {
-                continue;
-            }
+        return json_encode($schema);
+    }
 
-            $relatedSchemas = $relatedSchemas->append(
-                $this->schemas->filter(
-                    static function(Schema $schema) use ($property): bool {
-                        return $schema->schema === ucfirst($property->property);
-                    }
-                )
+    /**
+     * @return CollectionInterface<int, Schema>
+     */
+    private function getRelatedSchemas(Schema $schema): CollectionInterface
+    {
+        $schemas = $this->schemas;
+        $relatedSchemas = new Collection([]);
+
+        (new Collection($schema->properties))
+            ->reject(
+                static function(Property $property): bool {
+                    /** @phpstan-ignore-next-line */
+                    return UNDEFINED === $property->ref && UNDEFINED === $property->items;
+                }
+            )
+            ->each(
+                static function(Property $property) use ($schemas, &$relatedSchemas): void {
+                    /** @phpstan-ignore-next-line */
+                    $ref = $property->items instanceof Items ? $property->items->ref : $property->ref;
+
+                    $relatedSchemas = $relatedSchemas->append(
+                        $schemas->filter(
+                            static function(Schema $schema) use ($ref): bool {
+                                $ref = explode('/', $ref);
+                                return $schema->schema === end($ref);
+                            }
+                        )
+                    );
+                }
             );
-        }
 
-        return json_encode([
-            'schemas' => $relatedSchemas->toArray()
-        ]);
+        return $relatedSchemas->indexBy(
+            static function(Schema $schema): string {
+                return $schema->schema;
+            }
+        );
     }
 }

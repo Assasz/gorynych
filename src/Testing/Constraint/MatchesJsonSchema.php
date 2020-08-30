@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Gorynych\Testing\Constraint;
 
+use JsonSchema\Constraints\Factory;
+use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 use PHPUnit\Framework\Constraint\Constraint;
 
@@ -37,7 +39,7 @@ final class MatchesJsonSchema extends Constraint
     {
         $other = $this->normalizeJson($other);
 
-        $validator = new Validator();
+        $validator = $this->getSchemaValidator();
         $validator->validate($other, $this->schema, $this->checkMode);
 
         return $validator->isValid();
@@ -50,7 +52,7 @@ final class MatchesJsonSchema extends Constraint
     {
         $other = $this->normalizeJson($other);
 
-        $validator = new Validator();
+        $validator = $this->getSchemaValidator();
         $validator->validate($other, $this->schema, $this->checkMode);
 
         $errors = array_map(
@@ -97,5 +99,13 @@ final class MatchesJsonSchema extends Constraint
         }
 
         return $document;
+    }
+
+    private function getSchemaValidator(): Validator
+    {
+        $schemaStorage = new SchemaStorage();
+        $schemaStorage->addSchema('file://schemas', $this->schema);
+
+        return new Validator(new Factory($schemaStorage));
     }
 }
