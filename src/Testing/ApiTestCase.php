@@ -69,7 +69,9 @@ abstract class ApiTestCase extends TestCase
             throw new \BadMethodCallException('Cannot normalize empty response.');
         }
 
-        if ('application/json' === $response->headers->get('Content-Type')) {
+        $contentType = $response->headers->get('Content-Type');
+
+        if ('application/json' === $contentType || 'application/problem+json' === $contentType) {
             $data = json_decode($response->getContent(), true);
         }
 
