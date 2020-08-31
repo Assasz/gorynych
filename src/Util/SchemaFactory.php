@@ -33,9 +33,7 @@ final class SchemaFactory
         $schemaName = (new \ReflectionClass($className))->getShortName();
 
         $schema = $this->schemas->filter(
-            static function(Schema $schema) use ($schemaName): bool {
-                return $schema->schema === $schemaName;
-            }
+            static fn(Schema $schema): bool => $schema->schema === $schemaName
         )->first();
 
         $relatedSchemas = $this->getRelatedSchemas($schema)->toArray();
@@ -77,9 +75,7 @@ final class SchemaFactory
             );
 
         return $relatedSchemas->indexBy(
-            static function(Schema $schema): string {
-                return $schema->schema;
-            }
+            static fn(Schema $schema): string => $schema->schema
         );
     }
 }
