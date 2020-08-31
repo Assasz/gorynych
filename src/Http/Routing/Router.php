@@ -119,5 +119,9 @@ final class Router
         );
 
         $resource->id = $matches['id'] ?? null;
+
+        if (true === property_exists($resource, 'subId')) {
+            $resource->subId = $matches['subId'] ?? null;
+        }
     }
 }
