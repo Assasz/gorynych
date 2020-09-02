@@ -2,6 +2,7 @@
 [![Build Status](https://scrutinizer-ci.com/g/Assasz/gorynych/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Assasz/gorynych/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/Assasz/gorynych/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Assasz/gorynych/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Assasz/gorynych/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Assasz/gorynych/?branch=master)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/Assasz/gorynych/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
 Mighty REST API foundation, that leverages ROR architecture on the top of Symfony components.
 
