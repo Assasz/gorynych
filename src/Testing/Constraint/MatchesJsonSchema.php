@@ -72,7 +72,7 @@ final class MatchesJsonSchema extends Constraint
      * 1. a JSON object is represented as a PHP object, not as an associative array
      *
      * @param mixed $document
-     * @return object|mixed[]
+     * @return object|mixed[]|mixed
      * @throws \InvalidArgumentException
      * @throws \UnexpectedValueException
      */
@@ -86,16 +86,11 @@ final class MatchesJsonSchema extends Constraint
             throw new \InvalidArgumentException('Document must be scalar, array or object.');
         }
 
-        $document = json_encode($document);
-
-        if (false === is_string($document)) {
-            throw new \UnexpectedValueException('JSON encode failed.');
-        }
-
-        $document = json_decode($document);
-
-        if (false === is_array($document) && false === is_object($document)) {
-            throw new \UnexpectedValueException('JSON decode failed.');
+        try {
+            $document = json_encode($document, JSON_THROW_ON_ERROR);
+            $document = json_decode($document, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \UnexpectedValueException($e->getMessage());
         }
 
         return $document;
