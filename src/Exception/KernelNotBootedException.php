@@ -10,4 +10,8 @@ namespace Gorynych\Exception;
 
 final class KernelNotBootedException extends \RuntimeException
 {
+    public function __construct($message = "Please, boot kernel before this operation.")
+    {
+        parent::__construct($message);
+    }
 }

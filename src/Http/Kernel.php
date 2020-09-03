@@ -58,11 +58,29 @@ abstract class Kernel
      */
     public function getContainer(): ContainerBuilder
     {
-        if (false === $this->booted) {
-            throw new KernelNotBootedException('Unable to obtain container when kernel is not booted. Please, boot kernel first.');
-        }
+        $this->checkIsBooted();
 
         return $this->container;
+    }
+
+    /**
+     * @throws KernelNotBootedException
+     */
+    public function getRouter(): Router
+    {
+        $this->checkIsBooted();
+
+        return $this->container->get('http.router');
+    }
+
+    /**
+     * @throws KernelNotBootedException
+     */
+    public function getFormatterFactory(): FormatterFactory
+    {
+        $this->checkIsBooted();
+
+        return $this->container->get('http.formatter_factory');
     }
 
     /**
@@ -71,21 +89,22 @@ abstract class Kernel
      */
     public function handleRequest(Request $request): Response
     {
-        if (false === $this->booted) {
-            throw new KernelNotBootedException('Unable to handle request when kernel is not booted. Please, boot kernel first.');
-        }
+        $this->checkIsBooted();
 
         try {
-            $formatter = $this->initializeFormatterFactory()->create(...$request->getAcceptableContentTypes());
+            $formatter = $this->getFormatterFactory()->create(...$request->getAcceptableContentTypes());
         } catch (NotAcceptableHttpException $e) {
             return new Response($e->getMessage(), $e->getStatusCode());
         }
 
         try {
-            $operation = $this->initializeRouter()->findOperation($request);
+            $operation = $this->getRouter()->findOperation($request);
             $output = $operation->handle($request);
         } catch (\Throwable $throwable) {
-            if ('dev' === $this->env || ('test' === $this->env && !($throwable instanceof HttpException))) {
+            if (
+                'dev' === $this->env ||
+                ('test' === $this->env && !($throwable instanceof HttpException))
+            ) {
                 throw $throwable;
             }
 
@@ -107,16 +126,6 @@ abstract class Kernel
      */
     abstract protected function loadConfiguration(): void;
 
-    protected function initializeRouter(): Router
-    {
-        return new Router(new ResourceLoader($this->getContainer(), $this->getConfigLocator()));
-    }
-
-    protected function initializeFormatterFactory(): FormatterFactory
-    {
-        return new FormatterFactory($this->getConfigLocator());
-    }
-
     private function initializeContainer(): void
     {
         $this->container = new ContainerBuilder();
@@ -125,8 +134,20 @@ abstract class Kernel
         $loader->load('services.yaml');
 
         $this->container->set('kernel.config_locator', $this->getConfigLocator());
+        $this->container->set('http.router', new Router(new ResourceLoader($this->container, $this->getConfigLocator())));
+        $this->container->set('http.formatter_factory', new FormatterFactory($this->getConfigLocator()));
 
         $this->loadConfiguration();
         $this->container->compile();
+    }
+
+    /**
+     * @throws KernelNotBootedException
+     */
+    private function checkIsBooted(): void
+    {
+        if (false === $this->booted) {
+            throw new KernelNotBootedException();
+        }
     }
 }

@@ -25,6 +25,12 @@ services:
   kernel.config_locator:
     synthetic: true
 
+  http.router:
+    synthetic: true
+
+  http.formatter_factory:
+    synthetic: true
+
   Gorynych\Util\SchemaFactory:
     public: true
 
