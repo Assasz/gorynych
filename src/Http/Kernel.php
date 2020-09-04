@@ -58,7 +58,7 @@ abstract class Kernel
      */
     public function getContainer(): ContainerBuilder
     {
-        $this->checkIsBooted();
+        $this->ensureIsBooted();
 
         return $this->container;
     }
@@ -68,7 +68,7 @@ abstract class Kernel
      */
     public function getRouter(): Router
     {
-        $this->checkIsBooted();
+        $this->ensureIsBooted();
 
         return $this->container->get('http.router');
     }
@@ -78,7 +78,7 @@ abstract class Kernel
      */
     public function getFormatterFactory(): FormatterFactory
     {
-        $this->checkIsBooted();
+        $this->ensureIsBooted();
 
         return $this->container->get('http.formatter_factory');
     }
@@ -89,7 +89,7 @@ abstract class Kernel
      */
     public function handleRequest(Request $request): Response
     {
-        $this->checkIsBooted();
+        $this->ensureIsBooted();
 
         try {
             $formatter = $this->getFormatterFactory()->create(...$request->getAcceptableContentTypes());
@@ -144,7 +144,7 @@ abstract class Kernel
     /**
      * @throws KernelNotBootedException
      */
-    private function checkIsBooted(): void
+    private function ensureIsBooted(): void
     {
         if (false === $this->booted) {
             throw new KernelNotBootedException();
