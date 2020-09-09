@@ -1,0 +1,2 @@
+formatters:
+  application/json: Gorynych\Http\Formatter\JsonFormatter
