@@ -26,6 +26,9 @@ class JsonFormatterTest extends TestCase
         $this->assertSame($contentType, $response->headers->get('Content-Type'));
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function provideCases(): \Generator
     {
         yield 'successful response' => [
