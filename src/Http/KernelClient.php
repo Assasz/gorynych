@@ -13,10 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 final class KernelClient
 {
     private Kernel $kernel;
-    private RequestFactory $requestFactory;
+    private RequestFactoryInterface $requestFactory;
     private ?Response $response;
 
-    public function __construct(Kernel $kernel, RequestFactory $requestFactory)
+    public function __construct(Kernel $kernel, RequestFactoryInterface $requestFactory)
     {
         $this->kernel = $kernel;
         $this->requestFactory = $requestFactory;

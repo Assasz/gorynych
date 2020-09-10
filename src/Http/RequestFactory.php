@@ -11,7 +11,7 @@ namespace Gorynych\Http;
 use Gorynych\Util\EnvAccess;
 use Symfony\Component\HttpFoundation\Request;
 
-final class RequestFactory
+final class RequestFactory implements RequestFactoryInterface
 {
     public const REQUEST_JSON = 'json';
 
@@ -21,7 +21,7 @@ final class RequestFactory
     ];
 
     /**
-     * @param string[][] $options
+     * {@inheritdoc}
      */
     public function create(string $method, string $uri, array $options = []): Request
     {
