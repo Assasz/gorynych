@@ -13,8 +13,8 @@ use Gorynych\Operation\ResourceOperationInterface;
 
 abstract class AbstractResource
 {
-    protected const NUMERIC_ID = '(?P<id>[\d]+)';
-    protected const ALNUM_ID = '(?P<id>[\w]+)';
+    public const NUMERIC_ID = '(?P<id>[\d]+)';
+    public const ALNUM_ID = '(?P<id>[\w]+)';
 
     public ?string $id;
 
