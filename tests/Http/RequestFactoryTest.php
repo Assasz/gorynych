@@ -14,12 +14,12 @@ class RequestFactoryTest extends TestCase
     {
         $_ENV['BASE_URI'] = 'http://localhost';
 
-        $request = (new RequestFactory())->create(Request::METHOD_GET, '/resources', [
+        $request = (new RequestFactory())->create(Request::METHOD_POST, '/resources', [
             RequestFactory::REQUEST_JSON => ['foo' => 'bar']
         ]);
 
         $this->assertSame(json_encode(['foo' => 'bar']), $request->getContent());
-        $this->assertSame(Request::METHOD_GET, $request->getMethod());
+        $this->assertSame(Request::METHOD_POST, $request->getMethod());
         $this->assertSame('http://localhost/resources', $request->getUri());
         $this->assertSame('application/json', $request->headers->get('Accept'));
         $this->assertSame('application/json', $request->headers->get('Content-Type'));
