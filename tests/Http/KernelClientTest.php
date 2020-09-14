@@ -27,16 +27,24 @@ class KernelClientTest extends TestCase
 
     public function testPerformsRequestOnKernel(): void
     {
+        $request = Request::create('/resources', Request::METHOD_GET);
         $responseExpected = new Response('test_content');
-
-        $this->kernelMock->expects($this->once())->method('reboot')->willReturn($this->kernelMock);
-        $this->kernelMock->expects($this->once())->method('handleRequest')->willReturn($responseExpected);
 
         $this->requestFactoryMock
             ->expects($this->once())
             ->method('create')
             ->with(Request::METHOD_GET, '/resources')
-            ->willReturn(new Request());
+            ->willReturn($request);
+
+        $this->kernelMock
+            ->expects($this->once())
+            ->method('reboot')
+            ->willReturn($this->kernelMock);
+        $this->kernelMock
+            ->expects($this->once())
+            ->method('handleRequest')
+            ->with($request)
+            ->willReturn($responseExpected);
 
         $response = $this->setUpKernelClient()->request(Request::METHOD_GET, '/resources');
 
