@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Dto;
+namespace Gorynych\Tests\Http\Dto;
 
 use Gorynych\Http\Dto\ProblemDetails;
 use Gorynych\Http\Exception\BadRequestHttpException;

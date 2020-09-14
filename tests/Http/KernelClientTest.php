@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Http;
+namespace Gorynych\Tests\Http;
 
 use Gorynych\Http\Kernel;
 use Gorynych\Http\KernelClient;

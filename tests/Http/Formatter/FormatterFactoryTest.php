@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Formatter;
+namespace Gorynych\Tests\Http\Formatter;
 
 use Gorynych\Http\Exception\NotAcceptableHttpException;
 use Gorynych\Http\Formatter\FormatterFactory;

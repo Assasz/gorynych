@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Formatter;
+namespace Gorynych\Tests\Http\Formatter;
 
 use Gorynych\Http\Formatter\JsonFormatter;
 use PHPUnit\Framework\TestCase;

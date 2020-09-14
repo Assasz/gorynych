@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Routing;
+namespace Gorynych\Tests\Http\Routing;
 
 use Gorynych\Http\Routing\UriMatcher;
 use Gorynych\Resource\AbstractResource;
