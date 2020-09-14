@@ -5,24 +5,26 @@ declare(strict_types=1);
 namespace Http\Routing;
 
 use Cake\Collection\Collection;
+use DG\BypassFinals;
 use Gorynych\Http\Exception\MethodNotAllowedHttpException;
 use Gorynych\Http\Exception\NotFoundHttpException;
 use Gorynych\Http\Routing\Router;
 use Gorynych\Operation\ResourceOperationInterface;
 use Gorynych\Resource\AbstractResource;
-use Gorynych\Resource\ResourceLoaderInterface;
+use Gorynych\Resource\ResourceLoader;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 class RouterTest extends TestCase
 {
-    /** @var ResourceLoaderInterface|MockObject  */
+    /** @var ResourceLoader|MockObject  */
     private $resourceLoaderMock;
 
     public function setUp(): void
     {
-        $this->resourceLoaderMock = $this->createMock(ResourceLoaderInterface::class);
+        BypassFinals::enable();
+        $this->resourceLoaderMock = $this->createMock(ResourceLoader::class);
     }
 
     public function testFindsOperation(): void
