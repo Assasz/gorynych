@@ -12,7 +12,7 @@ use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
-final class ResourceLoader
+final class ResourceLoader implements ResourceLoaderInterface
 {
     private ContainerInterface $container;
     /** @var string[][] */
@@ -25,7 +25,7 @@ final class ResourceLoader
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getResources(): array
     {
@@ -33,11 +33,7 @@ final class ResourceLoader
     }
 
     /**
-     * Loads given resource class
-     *
-     * @param string $resourceClass
-     * @return AbstractResource
-     * @throws NotExistentResourceException
+     * {@inheritdoc}
      */
     public function loadResource(string $resourceClass): AbstractResource
     {

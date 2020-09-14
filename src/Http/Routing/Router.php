@@ -13,15 +13,15 @@ use Gorynych\Http\Exception\MethodNotAllowedHttpException;
 use Gorynych\Http\Exception\NotFoundHttpException;
 use Gorynych\Operation\ResourceOperationInterface;
 use Gorynych\Resource\AbstractResource;
-use Gorynych\Resource\ResourceLoader;
+use Gorynych\Resource\ResourceLoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Router
 {
-    private ResourceLoader $resourceLoader;
+    private ResourceLoaderInterface $resourceLoader;
     private ?Request $request;
 
-    public function __construct(ResourceLoader $resourceLoader)
+    public function __construct(ResourceLoaderInterface $resourceLoader)
     {
         $this->resourceLoader = $resourceLoader;
     }
