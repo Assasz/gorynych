@@ -17,12 +17,11 @@ use const OpenApi\Annotations\UNDEFINED;
 
 final class SchemaFactory
 {
-    /** @var Collection<int, Schema> */
-    private Collection $schemas;
+    private SchemaStorage $schemaStorage;
 
-    public function __construct(OAReader $oaReader)
+    public function __construct(SchemaStorage $schemaStorage)
     {
-        $this->schemas = new Collection($oaReader->read()->components->schemas);
+        $this->schemaStorage = $schemaStorage;
     }
 
     /**
@@ -32,7 +31,7 @@ final class SchemaFactory
     {
         $schemaName = (new \ReflectionClass($className))->getShortName();
 
-        $schema = $this->schemas->filter(
+        $schema = $this->schemaStorage->getSchemas()->filter(
             static fn(Schema $schema): bool => $schema->schema === $schemaName
         )->first();
 
@@ -44,11 +43,11 @@ final class SchemaFactory
     }
 
     /**
-     * @return CollectionInterface<int, Schema>
+     * @return CollectionInterface<string, Schema>
      */
     private function getRelatedSchemas(Schema $schema): CollectionInterface
     {
-        $schemas = $this->schemas;
+        $schemas = $this->schemaStorage->getSchemas();
         $relatedSchemas = new Collection([]);
 
         (new Collection($schema->properties))
