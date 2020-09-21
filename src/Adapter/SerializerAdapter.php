@@ -18,12 +18,15 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class SerializerAdapter
 {
-    protected Serializer $serializer;
+    /** @var SerializerInterface|NormalizerInterface */
+    protected $serializer;
     protected FileLocatorInterface $configLocator;
 
     public function __construct(FileLocatorInterface $configLocator)
