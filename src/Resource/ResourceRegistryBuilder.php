@@ -17,7 +17,7 @@ final class ResourceRegistryBuilder
 
     /** @var string[][][] */
     private array $registry;
-    private ?string $selectedResource;
+    private ?string $selectedResource = null;
 
     public function __construct(FileLocatorInterface $configLocator)
     {
@@ -112,5 +112,15 @@ final class ResourceRegistryBuilder
         );
 
         return $this;
+    }
+
+    /**
+     * Returns current state of registry
+     *
+     * @return string[][]
+     */
+    public function getRegistry(): array
+    {
+        return $this->registry['resources'];
     }
 }
