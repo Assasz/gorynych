@@ -101,10 +101,7 @@ abstract class Kernel
             $operation = $this->getRouter()->findOperation($request);
             $output = $operation->handle($request);
         } catch (\Throwable $throwable) {
-            if (
-                'dev' === $this->env ||
-                ('test' === $this->env && !($throwable instanceof HttpException))
-            ) {
+            if ('dev' === $this->env || ('test' === $this->env && !($throwable instanceof HttpException))) {
                 throw $throwable;
             }
 
@@ -126,7 +123,7 @@ abstract class Kernel
      */
     abstract protected function loadConfiguration(): void;
 
-    private function initializeContainer(): void
+    protected function initializeContainer(): void
     {
         $this->container = new ContainerBuilder();
 
