@@ -85,7 +85,6 @@ abstract class Kernel
 
     /**
      * @throws KernelNotBootedException
-     * @throws \Throwable
      */
     public function handleRequest(Request $request): Response
     {
@@ -101,27 +100,18 @@ abstract class Kernel
             $operation = $this->getRouter()->findOperation($request);
             $output = $operation->handle($request);
         } catch (\Throwable $throwable) {
-            if ('dev' === $this->env || ('test' === $this->env && !($throwable instanceof HttpException))) {
-                throw $throwable;
+            if ('prod' === $this->env || ('test' === $this->env && $throwable instanceof HttpException)) {
+                return $formatter->format(
+                    $problemDetails = ProblemDetails::fromThrowable($throwable),
+                    $problemDetails->status,
+                );
             }
 
-            $problemDetails = ProblemDetails::fromThrowable($throwable);
-
-            return $formatter->format($problemDetails, $problemDetails->status);
+            throw $throwable;
         }
 
         return $formatter->format($output, $operation->getResponseStatus());
     }
-
-    /**
-     * Returns FileLocator for project config directory
-     */
-    abstract public function getConfigLocator(): FileLocatorInterface;
-
-    /**
-     * Loads project configuration files
-     */
-    abstract protected function loadConfiguration(): void;
 
     protected function initializeContainer(): void
     {
@@ -147,4 +137,14 @@ abstract class Kernel
             throw new KernelNotBootedException();
         }
     }
+
+    /**
+     * Returns FileLocator for project config directory
+     */
+    abstract public function getConfigLocator(): FileLocatorInterface;
+
+    /**
+     * Loads project configuration files
+     */
+    abstract protected function loadConfiguration(): void;
 }
